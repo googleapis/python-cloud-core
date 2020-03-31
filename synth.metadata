@@ -1,11 +1,11 @@
 {
-  "updateTime": "2020-02-07T01:57:42.278757Z",
+  "updateTime": "2020-03-31T12:11:54.403326Z",
   "sources": [
     {
-      "template": {
-        "name": "python_split_library",
-        "origin": "synthtool.gcp",
-        "version": "2019.10.17"
+      "git": {
+        "name": "synthtool",
+        "remote": "https://github.com/googleapis/synthtool.git",
+        "sha": "a003d8655d3ebec2bbbd5fc3898e91e152265c67"
       }
     }
   ]
