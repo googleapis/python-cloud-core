@@ -66,7 +66,7 @@ class TestClient(unittest.TestCase):
 
         self.assertIs(client_obj._credentials, credentials)
         self.assertIsNone(client_obj._http_internal)
-        default.assert_called_once_with()
+        default.assert_called_once_with(scopes=None)
 
     def test_constructor_explicit(self):
         credentials = _make_credentials()
@@ -113,6 +113,11 @@ class TestClient(unittest.TestCase):
             KLASS.from_service_account_json(
                 mock.sentinel.filename, credentials=mock.sentinel.credentials
             )
+
+    def test_client_options_credentials_file(self):
+        klass = self._get_target_class()
+
+        
 
     def test__http_property_existing(self):
         credentials = _make_credentials()
@@ -167,7 +172,7 @@ class TestClientWithProject(unittest.TestCase):
         self.assertEqual(client_obj.project, project)
         self.assertIs(client_obj._credentials, credentials)
         self.assertIsNone(client_obj._http_internal)
-        default.assert_called_once_with()
+        default.assert_called_once_with(scopes=None)
         _determine_default_project.assert_called_once_with(None)
 
     def test_constructor_missing_project(self):
