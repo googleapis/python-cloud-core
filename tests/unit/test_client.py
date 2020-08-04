@@ -50,14 +50,14 @@ class TestClient(unittest.TestCase):
     def test_unpickleable(self):
         import pickle
 
-        CREDENTIALS = _make_credentials()
+        credentials = _make_credentials()
         HTTP = object()
 
-        client_obj = self._make_one(credentials=CREDENTIALS, _http=HTTP)
+        client_obj = self._make_one(credentials=credentials, _http=HTTP)
         with self.assertRaises(pickle.PicklingError):
             pickle.dumps(client_obj)
 
-    def test_constructor_defaults(self):
+    def test_ctor_defaults(self):
         credentials = _make_credentials()
 
         patch = mock.patch("google.auth.default", return_value=(credentials, None))
@@ -68,7 +68,7 @@ class TestClient(unittest.TestCase):
         self.assertIsNone(client_obj._http_internal)
         default.assert_called_once_with(scopes=None)
 
-    def test_constructor_explicit(self):
+    def test_ctor_explicit(self):
         credentials = _make_credentials()
         http = mock.sentinel.http
         client_obj = self._make_one(credentials=credentials, _http=http)
@@ -76,11 +76,38 @@ class TestClient(unittest.TestCase):
         self.assertIs(client_obj._credentials, credentials)
         self.assertIs(client_obj._http_internal, http)
 
-    def test_constructor_bad_credentials(self):
+    def test_ctor_bad_credentials(self):
         credentials = mock.sentinel.credentials
 
         with self.assertRaises(ValueError):
             self._make_one(credentials=credentials)
+
+    def test_ctor__http_property_existing(self):
+        credentials = _make_credentials()
+        http = object()
+        client = self._make_one(credentials=credentials, _http=http)
+        self.assertIs(client._http_internal, http)
+        self.assertIs(client._http, http)
+
+    def test_ctor__http_property_new(self):
+        from google.cloud.client import _CREDENTIALS_REFRESH_TIMEOUT
+
+        credentials = _make_credentials()
+        client = self._make_one(credentials=credentials)
+        self.assertIsNone(client._http_internal)
+
+        authorized_session_patch = mock.patch(
+            "google.auth.transport.requests.AuthorizedSession",
+            return_value=mock.sentinel.http,
+        )
+        with authorized_session_patch as AuthorizedSession:
+            self.assertIs(client._http, mock.sentinel.http)
+            # Check the mock.
+            AuthorizedSession.assert_called_once_with(credentials, refresh_timeout=_CREDENTIALS_REFRESH_TIMEOUT)
+            # Make sure the cached value is used on subsequent access.
+            self.assertIs(client._http_internal, mock.sentinel.http)
+            self.assertIs(client._http, mock.sentinel.http)
+            self.assertEqual(AuthorizedSession.call_count, 1)
 
     def test_from_service_account_json(self):
         from google.cloud import _helpers
@@ -113,37 +140,6 @@ class TestClient(unittest.TestCase):
             KLASS.from_service_account_json(
                 mock.sentinel.filename, credentials=mock.sentinel.credentials
             )
-
-    def test_client_options_credentials_file(self):
-        klass = self._get_target_class()
-
-        
-
-    def test__http_property_existing(self):
-        credentials = _make_credentials()
-        http = object()
-        client = self._make_one(credentials=credentials, _http=http)
-        self.assertIs(client._http_internal, http)
-        self.assertIs(client._http, http)
-
-    def test__http_property_new(self):
-        from google.cloud.client import _CREDENTIALS_REFRESH_TIMEOUT
-        credentials = _make_credentials()
-        client = self._make_one(credentials=credentials)
-        self.assertIsNone(client._http_internal)
-
-        authorized_session_patch = mock.patch(
-            "google.auth.transport.requests.AuthorizedSession",
-            return_value=mock.sentinel.http,
-        )
-        with authorized_session_patch as AuthorizedSession:
-            self.assertIs(client._http, mock.sentinel.http)
-            # Check the mock.
-            AuthorizedSession.assert_called_once_with(credentials, refresh_timeout=_CREDENTIALS_REFRESH_TIMEOUT)
-            # Make sure the cached value is used on subsequent access.
-            self.assertIs(client._http_internal, mock.sentinel.http)
-            self.assertIs(client._http, mock.sentinel.http)
-            self.assertEqual(AuthorizedSession.call_count, 1)
 
 
 class TestClientWithProject(unittest.TestCase):
