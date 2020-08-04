@@ -151,7 +151,7 @@ class Client(_ClientFactoryMixin):
                 credentials, _ = google.auth.default(scopes=scopes)
 
         self._credentials = google.auth.credentials.with_scopes_if_required(
-                credentials, scopes=scopes)
+            credentials, scopes=scopes)
 
         if client_options.quota_project_id:
             self._credentials = self._credentials.with_quota_project(client_options.quota_project_id)
