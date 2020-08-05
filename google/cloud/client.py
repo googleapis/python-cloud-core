@@ -133,14 +133,16 @@ class Client(_ClientFactoryMixin):
         if client_options is None:
             client_options = google.api_core.client_options.ClientOptions()
 
-        if credentials and client_options.credentials_file:
+        if credentials and hasattr(client_options, 'credentials_file'):
             raise google.api_core.exceptions.DuplicateCredentialArgs(
                 "'credentials' and 'client_options.credentials_file' are mutually exclusive.")
 
         if credentials and not isinstance(credentials, google.auth.credentials.Credentials):
             raise ValueError(_GOOGLE_AUTH_CREDENTIALS_HELP)
 
-        scopes = client_options.scopes or self.SCOPE
+        scopes = self.SCOPE
+        if hasattr(client_options, 'scopes'):
+            scopes = client_options.scopes
 
         # if no http is provided, credentials must exist
         if not _http and credentials is None:
@@ -153,7 +155,7 @@ class Client(_ClientFactoryMixin):
         self._credentials = google.auth.credentials.with_scopes_if_required(
             credentials, scopes=scopes)
 
-        if client_options.quota_project_id:
+        if hasattr(client_options, 'quota_project_id'):
             self._credentials = self._credentials.with_quota_project(client_options.quota_project_id)
 
         self._http_internal = _http
