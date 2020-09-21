@@ -16,6 +16,23 @@
 
 * update docs build (via synth) ([#14](https://www.github.com/googleapis/python-cloud-core/issues/14)) ([f1a95ce](https://www.github.com/googleapis/python-cloud-core/commit/f1a95ce89c25f5297470299ca1ef7e1e05a9e99f))
 
+## 1.4.2rc1
+
+09-21-2020 14:45 PDT
+
+- perf: use prettyPrint=false by default ([#28](https://github.com/googleapis/python-cloud-core/pull/28))
+- test: fix mock credentials to allow for quota projects ([#29](https://github.com/googleapis/python-cloud-core/pull/29))
+
+### Implementation Changes
+
+### New Features
+
+### Dependencies
+
+### Documentation
+
+### Internal / Testing Changes
+
 ## [1.4.0](https://www.github.com/googleapis/python-cloud-core/compare/v1.3.0...v1.4.0) (2020-08-04)
 
 
