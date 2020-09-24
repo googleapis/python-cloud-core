@@ -222,8 +222,7 @@ class JSONConnection(Connection):
                 query_params_dict[key].append(value)
             query_params = query_params_dict
 
-        if "prettyPrint" not in query_params:
-            query_params["prettyPrint"] = "false"
+        query_params.setdefault("prettyPrint", "false")
 
         url += "?" + urlencode(query_params, doseq=True)
 
