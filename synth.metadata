@@ -3,15 +3,15 @@
     {
       "git": {
         "name": ".",
-        "remote": "https://github.com/googleapis/python-cloud-core.git",
-        "sha": "f1a95ce89c25f5297470299ca1ef7e1e05a9e99f"
+        "remote": "git@github.com:googleapis/python-cloud-core",
+        "sha": "acc122a93bd4d992201ab580f59b4e5a79ae5021"
       }
     },
     {
       "git": {
         "name": "synthtool",
         "remote": "https://github.com/googleapis/synthtool.git",
-        "sha": "4f8f5dc24af79694887385015294e4dbb214c352"
+        "sha": "0762e8ee2ec21cdfc4d82020b985a104feb0453b"
       }
     }
   ]
