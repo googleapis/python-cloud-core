@@ -4,6 +4,57 @@
 
 [1]: https://pypi.org/project/google-cloud-core/#history
 
+### [1.4.2](https://www.github.com/googleapis/python-cloud-core/compare/v1.4.1...v1.4.2) (2020-09-29)
+
+
+### Bug Fixes
+
+* handle query_params tuples in JSONConnection.build_api_url ([#34](https://www.github.com/googleapis/python-cloud-core/issues/34)) ([6a9adb3](https://www.github.com/googleapis/python-cloud-core/commit/6a9adb3dddd5f6d82032aba5efd673ea0641593c))
+
+
+### Performance Improvements
+
+* use prettyPrint=false by default ([#28](https://www.github.com/googleapis/python-cloud-core/issues/28)) ([c407b5d](https://www.github.com/googleapis/python-cloud-core/commit/c407b5d617c04affbdb4f444c188edffb25d4336))
+
+### [1.4.1](https://www.github.com/googleapis/python-cloud-core/compare/v1.4.0...v1.4.1) (2020-08-06)
+
+
+### Bug Fixes
+
+* **deps:** fix missing scopes attribute in client_options ([#24](https://www.github.com/googleapis/python-cloud-core/issues/24)) ([a0e7730](https://www.github.com/googleapis/python-cloud-core/commit/a0e773057a59b573a760d38710c52a8747fceb1f)), closes [/github.com/googleapis/python-cloud-core/issues/23#issuecomment-669504557](https://www.github.com/googleapis//github.com/googleapis/python-cloud-core/issues/23/issues/issuecomment-669504557)
+
+
+### Documentation
+
+* update docs build (via synth) ([#14](https://www.github.com/googleapis/python-cloud-core/issues/14)) ([f1a95ce](https://www.github.com/googleapis/python-cloud-core/commit/f1a95ce89c25f5297470299ca1ef7e1e05a9e99f))
+
+
+## 1.4.2rc2
+
+09-24-2020 09:29 PDT
+
+### Implementation Changes
+
+- fix: handle query_params tuples in JSONConnection.build_api_url ([#34](https://github.com/googleapis/python-cloud-core/pull/34))
+
+### Internal / Testing Changes
+
+- chore: add default CODEOWNERS ([#33](https://github.com/googleapis/python-cloud-core/pull/33))
+
+
+## 1.4.2rc1
+
+09-21-2020 14:45 PDT
+
+
+### Implementation Changes
+
+- perf: use prettyPrint=false by default ([#28](https://github.com/googleapis/python-cloud-core/pull/28))
+
+### Internal / Testing Changes
+
+- test: fix mock credentials to allow for quota projects ([#29](https://github.com/googleapis/python-cloud-core/pull/29))
+
 ## [1.4.0](https://www.github.com/googleapis/python-cloud-core/compare/v1.3.0...v1.4.0) (2020-08-04)
 
 
@@ -71,7 +122,7 @@
 
 06/11/2019 15:19 PDT
 
-### Internal Changes 
+### Internal Changes
 - Prevent requests from hanging on SSL handshake issue by adding a max timeout of 5 minutes. ([#8207](https://github.com/googleapis/google-cloud-python/pull/8207))
 
 ## 1.0.1
