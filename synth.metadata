@@ -4,7 +4,7 @@
       "git": {
         "name": ".",
         "remote": "https://github.com/googleapis/python-cloud-core.git",
-        "sha": "5768ce33a182c97d9c3b2cd77d2fec6a39326b68"
+        "sha": "172e5e5de155aa485089e77ba6199ba71e08614e"
       }
     },
     {
