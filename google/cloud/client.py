@@ -50,6 +50,36 @@ class _ClientFactoryMixin(object):
     _SET_PROJECT = False
 
     @classmethod
+    def from_service_account_info(cls, info, *args, **kwargs):
+        """Factory to retrieve JSON credentials while creating client.
+
+        :type info: str
+        :param info:
+            The JSON object with a private key and other credentials
+            information (downloaded from the Google APIs console).
+
+        :type args: tuple
+        :param args: Remaining positional arguments to pass to constructor.
+
+        :param kwargs: Remaining keyword arguments to pass to constructor.
+
+        :rtype: :class:`_ClientFactoryMixin`
+        :returns: The client created with the retrieved JSON credentials.
+        :raises TypeError: if there is a conflict with the kwargs
+                 and the credentials created by the factory.
+        """
+        if "credentials" in kwargs:
+            raise TypeError("credentials must not be in keyword arguments")
+
+        credentials = service_account.Credentials.from_service_account_info(info)
+        if cls._SET_PROJECT:
+            if "project" not in kwargs:
+                kwargs["project"] = info.get("project_id")
+
+        kwargs["credentials"] = credentials
+        return cls(*args, **kwargs)
+
+    @classmethod
     def from_service_account_json(cls, json_credentials_path, *args, **kwargs):
         """Factory to retrieve JSON credentials while creating client.
 
@@ -71,19 +101,10 @@ class _ClientFactoryMixin(object):
         :raises TypeError: if there is a conflict with the kwargs
                  and the credentials created by the factory.
         """
-        if "credentials" in kwargs:
-            raise TypeError("credentials must not be in keyword arguments")
         with io.open(json_credentials_path, "r", encoding="utf-8") as json_fi:
-            credentials_info = json.load(json_fi)
-        credentials = service_account.Credentials.from_service_account_info(
-            credentials_info
-        )
-        if cls._SET_PROJECT:
-            if "project" not in kwargs:
-                kwargs["project"] = credentials_info.get("project_id")
+            info = json.load(json_fi)
 
-        kwargs["credentials"] = credentials
-        return cls(*args, **kwargs)
+        return cls.from_service_account_info(info, *args, **kwargs)
 
 
 class Client(_ClientFactoryMixin):
@@ -135,9 +156,12 @@ class Client(_ClientFactoryMixin):
 
         if credentials and client_options.credentials_file:
             raise google.api_core.exceptions.DuplicateCredentialArgs(
-                "'credentials' and 'client_options.credentials_file' are mutually exclusive.")
+                "'credentials' and 'client_options.credentials_file' are mutually exclusive."
+            )
 
-        if credentials and not isinstance(credentials, google.auth.credentials.Credentials):
+        if credentials and not isinstance(
+            credentials, google.auth.credentials.Credentials
+        ):
             raise ValueError(_GOOGLE_AUTH_CREDENTIALS_HELP)
 
         scopes = client_options.scopes or self.SCOPE
@@ -146,15 +170,19 @@ class Client(_ClientFactoryMixin):
         if not _http and credentials is None:
             if client_options.credentials_file:
                 credentials, _ = google.auth.load_credentials_from_file(
-                    client_options.credentials_file, scopes=scopes)
+                    client_options.credentials_file, scopes=scopes
+                )
             else:
                 credentials, _ = google.auth.default(scopes=scopes)
 
         self._credentials = google.auth.credentials.with_scopes_if_required(
-            credentials, scopes=scopes)
+            credentials, scopes=scopes
+        )
 
         if client_options.quota_project_id:
-            self._credentials = self._credentials.with_quota_project(client_options.quota_project_id)
+            self._credentials = self._credentials.with_quota_project(
+                client_options.quota_project_id
+            )
 
         self._http_internal = _http
 
@@ -178,8 +206,7 @@ class Client(_ClientFactoryMixin):
         """
         if self._http_internal is None:
             self._http_internal = google.auth.transport.requests.AuthorizedSession(
-                self._credentials,
-                refresh_timeout=_CREDENTIALS_REFRESH_TIMEOUT,
+                self._credentials, refresh_timeout=_CREDENTIALS_REFRESH_TIMEOUT,
             )
         return self._http_internal
 
@@ -247,4 +274,6 @@ class ClientWithProject(Client, _ClientProjectMixin):
 
     def __init__(self, project=None, credentials=None, client_options=None, _http=None):
         _ClientProjectMixin.__init__(self, project=project)
-        Client.__init__(self, credentials=credentials, client_options=client_options, _http=_http)
+        Client.__init__(
+            self, credentials=credentials, client_options=client_options, _http=_http
+        )

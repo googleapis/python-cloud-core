@@ -80,7 +80,7 @@ class TestClient(unittest.TestCase):
         from google.api_core.exceptions import DuplicateCredentialArgs
 
         credentials = _make_credentials()
-        client_options = {'credentials_file': '/path/to/creds.json'}
+        client_options = {"credentials_file": "/path/to/creds.json"}
         with self.assertRaises(DuplicateCredentialArgs):
             self._make_one(credentials=credentials, client_options=client_options)
 
@@ -92,26 +92,34 @@ class TestClient(unittest.TestCase):
 
     def test_ctor_client_options_w_creds_file_scopes(self):
         credentials = _make_credentials()
-        credentials_file = '/path/to/creds.json'
-        scopes = ['SCOPE1', 'SCOPE2']
-        client_options = {'credentials_file': credentials_file, 'scopes': scopes}
+        credentials_file = "/path/to/creds.json"
+        scopes = ["SCOPE1", "SCOPE2"]
+        client_options = {"credentials_file": credentials_file, "scopes": scopes}
 
-        patch = mock.patch("google.auth.load_credentials_from_file", return_value=(credentials, None))
+        patch = mock.patch(
+            "google.auth.load_credentials_from_file", return_value=(credentials, None),
+        )
         with patch as load_credentials_from_file:
             client_obj = self._make_one(client_options=client_options)
 
         self.assertIs(client_obj._credentials, credentials)
         self.assertIsNone(client_obj._http_internal)
-        load_credentials_from_file.assert_called_once_with(credentials_file, scopes=scopes)
+        load_credentials_from_file.assert_called_once_with(
+            credentials_file, scopes=scopes,
+        )
 
     def test_ctor_client_options_w_quota_project(self):
         credentials = _make_credentials()
-        quota_project_id = 'quota-project-123'
-        client_options = {'quota_project_id': quota_project_id}
+        quota_project_id = "quota-project-123"
+        client_options = {"quota_project_id": quota_project_id}
 
-        client_obj = self._make_one(credentials=credentials, client_options=client_options)
+        client_obj = self._make_one(
+            credentials=credentials, client_options=client_options,
+        )
 
-        self.assertIs(client_obj._credentials, credentials.with_quota_project.return_value)
+        self.assertIs(
+            client_obj._credentials, credentials.with_quota_project.return_value,
+        )
         credentials.with_quota_project.assert_called_once_with(quota_project_id)
 
     def test_ctor__http_property_existing(self):
@@ -135,21 +143,47 @@ class TestClient(unittest.TestCase):
         with authorized_session_patch as AuthorizedSession:
             self.assertIs(client._http, mock.sentinel.http)
             # Check the mock.
-            AuthorizedSession.assert_called_once_with(credentials, refresh_timeout=_CREDENTIALS_REFRESH_TIMEOUT)
+            AuthorizedSession.assert_called_once_with(
+                credentials, refresh_timeout=_CREDENTIALS_REFRESH_TIMEOUT,
+            )
             # Make sure the cached value is used on subsequent access.
             self.assertIs(client._http_internal, mock.sentinel.http)
             self.assertIs(client._http, mock.sentinel.http)
             self.assertEqual(AuthorizedSession.call_count, 1)
+
+    def test_from_service_account_info(self):
+        klass = self._get_target_class()
+
+        info = {"dummy": "value", "valid": "json"}
+        constructor_patch = mock.patch(
+            "google.oauth2.service_account.Credentials.from_service_account_info",
+            return_value=_make_credentials(),
+        )
+
+        with constructor_patch as constructor:
+            client_obj = klass.from_service_account_info(info)
+
+        self.assertIs(client_obj._credentials, constructor.return_value)
+        self.assertIsNone(client_obj._http_internal)
+        constructor.assert_called_once_with(info)
+
+    def test_from_service_account_info_w_explicit_credentials(self):
+        KLASS = self._get_target_class()
+
+        info = {"dummy": "value", "valid": "json"}
+
+        with self.assertRaises(TypeError):
+            KLASS.from_service_account_info(info, credentials=mock.sentinel.credentials)
 
     def test_from_service_account_json(self):
         from google.cloud import _helpers
 
         klass = self._get_target_class()
 
-        # Mock both the file opening and the credentials constructor.
         info = {"dummy": "value", "valid": "json"}
-        json_fi = io.StringIO(_helpers._bytes_to_unicode(json.dumps(info)))
-        file_open_patch = mock.patch("io.open", return_value=json_fi)
+        json_file = io.StringIO(_helpers._bytes_to_unicode(json.dumps(info)))
+
+        file_open_patch = mock.patch("io.open", return_value=json_file)
         constructor_patch = mock.patch(
             "google.oauth2.service_account.Credentials." "from_service_account_info",
             return_value=_make_credentials(),
@@ -164,14 +198,6 @@ class TestClient(unittest.TestCase):
         # Check that mocks were called as expected.
         file_open.assert_called_once_with(mock.sentinel.filename, "r", encoding="utf-8")
         constructor.assert_called_once_with(info)
-
-    def test_from_service_account_json_bad_args(self):
-        KLASS = self._get_target_class()
-
-        with self.assertRaises(TypeError):
-            KLASS.from_service_account_json(
-                mock.sentinel.filename, credentials=mock.sentinel.credentials
-            )
 
 
 class TestClientWithProject(unittest.TestCase):
@@ -249,6 +275,37 @@ class TestClientWithProject(unittest.TestCase):
         PROJECT = u"PROJECT"
         self._explicit_ctor_helper(PROJECT)
 
+    def _from_service_account_info_helper(self, project=None):
+        klass = self._get_target_class()
+
+        info = {"dummy": "value", "valid": "json"}
+        if project is None:
+            expected_project = "eye-d-of-project"
+        else:
+            expected_project = project
+
+        info["project_id"] = expected_project
+
+        constructor_patch = mock.patch(
+            "google.oauth2.service_account.Credentials.from_service_account_info",
+            return_value=_make_credentials(),
+        )
+
+        with constructor_patch as constructor:
+            client_obj = klass.from_service_account_info(info)
+
+        self.assertIs(client_obj._credentials, constructor.return_value)
+        self.assertIsNone(client_obj._http_internal)
+        self.assertEqual(client_obj.project, expected_project)
+
+        constructor.assert_called_once_with(info)
+
+    def test_from_service_account_info(self):
+        self._from_service_account_info_helper()
+
+    def test_from_service_account_info_with_project(self):
+        self._from_service_account_info_helper(project="prah-jekt")
+
     def _from_service_account_json_helper(self, project=None):
         from google.cloud import _helpers
 
@@ -261,11 +318,12 @@ class TestClientWithProject(unittest.TestCase):
             expected_project = project
 
         info["project_id"] = expected_project
-        # Mock both the file opening and the credentials constructor.
-        json_fi = io.StringIO(_helpers._bytes_to_unicode(json.dumps(info)))
-        file_open_patch = mock.patch("io.open", return_value=json_fi)
+
+        json_file = io.StringIO(_helpers._bytes_to_unicode(json.dumps(info)))
+        file_open_patch = mock.patch("io.open", return_value=json_file)
+
         constructor_patch = mock.patch(
-            "google.oauth2.service_account.Credentials." "from_service_account_info",
+            "google.oauth2.service_account.Credentials.from_service_account_info",
             return_value=_make_credentials(),
         )
 
@@ -281,8 +339,10 @@ class TestClientWithProject(unittest.TestCase):
         self.assertIs(client_obj._credentials, constructor.return_value)
         self.assertIsNone(client_obj._http_internal)
         self.assertEqual(client_obj.project, expected_project)
-        # Check that mocks were called as expected.
-        file_open.assert_called_once_with(mock.sentinel.filename, "r", encoding="utf-8")
+
+        file_open.assert_called_once_with(
+            mock.sentinel.filename, "r", encoding="utf-8",
+        )
         constructor.assert_called_once_with(info)
 
     def test_from_service_account_json(self):
