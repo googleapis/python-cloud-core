@@ -14,8 +14,6 @@
 
 """This script is used to synthesize generated parts of this library."""
 
-import re
-
 import synthtool as s
 from synthtool import gcp
 
@@ -34,4 +32,64 @@ s.move(
         ".coveragerc",
         "setup.cfg",
     ],
+)
+
+s.replace(
+    "CONTRIBUTING.rst",
+    """\
+  3.5, 3.6, 3.7 and 3.8 on both UNIX and Windows.
+""",
+    """\
+  3.6, 3.7 and 3.8 on both UNIX and Windows.
+""",
+)
+
+s.replace(
+    "CONTRIBUTING.rst",
+    """\
+- Once you have downloaded your json keys, set the environment variable[ ]
+""",
+    """\
+- Once you have downloaded your json keys, set the environment variable
+""",
+)
+
+s.replace(
+    "CONTRIBUTING.rst",
+    """\
+We support:
+
+-  `Python 3.5`_
+-  `Python 3.6`_
+-  `Python 3.7`_
+-  `Python 3.8`_
+
+.. _Python 3.5: https://docs.python.org/3.5/
+.. _Python 3.6: https://docs.python.org/3.6/
+.. _Python 3.7: https://docs.python.org/3.7/
+.. _Python 3.8: https://docs.python.org/3.8/
+""",
+    """\
+We support:
+
+-  `Python 3.6`_
+-  `Python 3.7`_
+-  `Python 3.8`_
+
+.. _Python 3.6: https://docs.python.org/3.6/
+.. _Python 3.7: https://docs.python.org/3.7/
+.. _Python 3.8: https://docs.python.org/3.8/
+""",
+)
+
+s.replace(
+    "CONTRIBUTING.rst",
+    """\
+We also explicitly decided to support Python 3 beginning with version
+3.5. Reasons for this include:
+""",
+    """\
+We also explicitly decided to support Python 3 beginning with version
+3.6. Reasons for this include:
+""",
 )
