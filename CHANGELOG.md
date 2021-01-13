@@ -4,6 +4,13 @@
 
 [1]: https://pypi.org/project/google-cloud-core/#history
 
+### [1.5.1](https://www.github.com/googleapis/python-cloud-core/compare/v1.5.0...v1.5.1) (2021-01-13)
+
+
+### Documentation
+
+* **python:** document adding Python 3.9 support, dropping 3.5 support ([#65](https://www.github.com/googleapis/python-cloud-core/issues/65)) ([860f345](https://www.github.com/googleapis/python-cloud-core/commit/860f345d1f912ffb9a41003159f34ddbebfbd110)), closes [#787](https://www.github.com/googleapis/python-cloud-core/issues/787)
+
 ## [1.5.0](https://www.github.com/googleapis/python-cloud-core/compare/v1.4.4...v1.5.0) (2020-12-14)
 
 
