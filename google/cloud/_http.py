@@ -20,12 +20,14 @@ try:
 except ImportError:
     import collections as collections_abc
 import json
+import os
 import platform
 import warnings
 
 from six.moves.urllib.parse import urlencode
 
 from google.api_core.client_info import ClientInfo
+from google.auth.transport import requests
 from google.cloud import exceptions
 from google.cloud import version
 
@@ -154,6 +156,13 @@ class Connection(object):
                 A :class:`requests.Session` instance.
         """
         return self._client._http
+    
+    @property
+    def is_mtls(self):
+        """"""
+        if isinstance(self.http, requests.AuthorizedSession):
+            return self.http.is_mtls;
+        return False
 
 
 class JSONConnection(Connection):
@@ -175,6 +184,12 @@ class JSONConnection(Connection):
 
     API_BASE_URL = None
     """The base of the API call URL."""
+
+    API_BASE_MTLS_URL = None
+    """The base of the API call URL for mutual TLS."""
+
+    ALLOW_AUTO_SWITCH_TO_MTLS_URL = False
+    """Indicates if auto switch to mTLS url is allowed."""
 
     API_VERSION = None
     """The version of the API, used in building the API call's URL."""
@@ -209,8 +224,21 @@ class JSONConnection(Connection):
         :rtype: str
         :returns: The URL assembled from the pieces provided.
         """
+        if not api_base_url:
+            env = os.getenv("GOOGLE_API_USE_MTLS_ENDPOINT", "auto")
+            if env == "always":
+                url_to_use = self.API_BASE_MTLS_URL
+            elif env == "never":
+                url_to_use = self.API_BASE_URL
+            elif self.ALLOW_AUTO_SWITCH_TO_MTLS_URL:
+                url_to_use = self.API_BASE_MTLS_URL if self.is_mtls else self.API_BASE_URL
+            else:
+                url_to_use = self.API_BASE_URL
+        else:
+            url_to_use = api_base_url
+
         url = self.API_URL_TEMPLATE.format(
-            api_base_url=(api_base_url or self.API_BASE_URL),
+            api_base_url=url_to_use,
             api_version=(api_version or self.API_VERSION),
             path=path,
         )
