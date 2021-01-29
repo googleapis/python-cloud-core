@@ -198,12 +198,13 @@ class JSONConnection(Connection):
         env = os.getenv("GOOGLE_API_USE_MTLS_ENDPOINT", "auto")
         if env == "always":
             url_to_use = self.API_BASE_MTLS_URL
-        if env == "never":
+        elif env == "never":
             url_to_use = self.API_BASE_URL
-        if self.ALLOW_AUTO_SWITCH_TO_MTLS_URL:
-            url_to_use = self.API_BASE_MTLS_URL if self.http.is_mtls else self.API_BASE_URL
         else:
-            url_to_use = self.API_BASE_URL
+            if self.ALLOW_AUTO_SWITCH_TO_MTLS_URL:
+                url_to_use = self.API_BASE_MTLS_URL if self.http.is_mtls else self.API_BASE_URL
+            else:
+                url_to_use = self.API_BASE_URL
         return url_to_use
 
     def build_api_url(
