@@ -190,7 +190,27 @@ class JSONConnection(Connection):
     """A template for the URL of a particular API call."""
 
     def get_api_base_url_for_mtls(self, api_base_url=None):
-        """
+        """Return the api base url for mutual TLS.
+
+        Typically, you shouldn't need to use this method.
+
+        The logic is as follows:
+
+        If `api_base_url` is provided, just return this value; otherwise, the
+        return value depends `GOOGLE_API_USE_MTLS_ENDPOINT` environment variable
+        value.
+
+        If the environment variable value is "always", return `API_BASE_MTLS_URL`.
+        If the environment variable value is "never", return `API_BASE_URL`.
+        Otherwise, if `ALLOW_AUTO_SWITCH_TO_MTLS_URL` is True and the underlying
+        http is mTLS, then return `API_BASE_MTLS_URL`; otherwise return `API_BASE_URL`.
+
+        :type api_base_url: str
+        :param api_base_url: User provided api base url. It takes precedence over
+                             `API_BASE_URL` and `API_BASE_MTLS_URL`.
+
+        :rtype: str
+        :returns: The api base url used for mTLS.
         """
         if api_base_url:
             return api_base_url
