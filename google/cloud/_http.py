@@ -27,7 +27,6 @@ import warnings
 from six.moves.urllib.parse import urlencode
 
 from google.api_core.client_info import ClientInfo
-from google.auth.transport import requests
 from google.cloud import exceptions
 from google.cloud import version
 
@@ -196,15 +195,13 @@ class JSONConnection(Connection):
         if api_base_url:
             return api_base_url
 
-        is_mtls = self.http.is_mtls if isinstance(self.http, requests.AuthorizedSession) else False
-
         env = os.getenv("GOOGLE_API_USE_MTLS_ENDPOINT", "auto")
         if env == "always":
             url_to_use = self.API_BASE_MTLS_URL
         if env == "never":
             url_to_use = self.API_BASE_URL
         if self.ALLOW_AUTO_SWITCH_TO_MTLS_URL:
-            url_to_use = self.API_BASE_MTLS_URL if is_mtls else self.API_BASE_URL
+            url_to_use = self.API_BASE_MTLS_URL if self.http.is_mtls else self.API_BASE_URL
         else:
             url_to_use = self.API_BASE_URL
         return url_to_use

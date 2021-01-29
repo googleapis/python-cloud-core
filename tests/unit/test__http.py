@@ -28,6 +28,11 @@ class TestConnection(unittest.TestCase):
 
         return Connection
 
+    @staticmethod
+    def _make_client(is_mtls=False):
+        # create a client mock so we can access client.http.is_mtls
+        return {'http' : {'is_mtls': is_mtls}}
+
     def _make_one(self, *args, **kw):
         return self._get_target_class()(*args, **kw)
 
