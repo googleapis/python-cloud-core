@@ -4,6 +4,13 @@
 
 [1]: https://pypi.org/project/google-cloud-core/#history
 
+### [1.6.1](https://www.github.com/googleapis/python-cloud-core/compare/v1.6.0...v1.6.1) (2021-05-28)
+
+
+### Documentation
+
+* update python contributing guide ([#80](https://www.github.com/googleapis/python-cloud-core/issues/80)) ([58deef8](https://www.github.com/googleapis/python-cloud-core/commit/58deef8ce2e90415a4c38022e88fdfe25bc666b6))
+
 ## [1.6.0](https://www.github.com/googleapis/python-cloud-core/compare/v1.5.0...v1.6.0) (2021-02-02)
 
 
