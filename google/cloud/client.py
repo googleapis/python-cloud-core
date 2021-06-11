@@ -220,6 +220,7 @@ class Client(_ClientFactoryMixin):
         Suggested use:
 
         .. code-block:: python
+
            import contextlib
 
            with contextlib.closing(client):  # closes on exit
