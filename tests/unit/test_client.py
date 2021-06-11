@@ -397,10 +397,13 @@ class TestClientWithProject(unittest.TestCase):
         klass = self._get_target_class()
 
         info = {"dummy": "value", "valid": "json"}
+        kwargs = {}
+
         if project is None:
             expected_project = "eye-d-of-project"
         else:
             expected_project = project
+            kwargs["project"] = project
 
         info["project_id"] = expected_project
 
@@ -410,7 +413,7 @@ class TestClientWithProject(unittest.TestCase):
         )
 
         with constructor_patch as constructor:
-            client_obj = klass.from_service_account_info(info)
+            client_obj = klass.from_service_account_info(info, **kwargs)
 
         self.assertIs(client_obj._credentials, constructor.return_value)
         self.assertIsNone(client_obj._http_internal)

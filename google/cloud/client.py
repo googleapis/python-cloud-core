@@ -103,19 +103,10 @@ class _ClientFactoryMixin(object):
         :raises TypeError: if there is a conflict with the kwargs
                  and the credentials created by the factory.
         """
-        if "credentials" in kwargs:
-            raise TypeError("credentials must not be in keyword arguments")
         with io.open(json_credentials_path, "r", encoding="utf-8") as json_fi:
             credentials_info = json.load(json_fi)
-        credentials = service_account.Credentials.from_service_account_info(
-            credentials_info
-        )
-        if cls._SET_PROJECT:
-            if "project" not in kwargs:
-                kwargs["project"] = credentials_info.get("project_id")
 
-        kwargs["credentials"] = credentials
-        return cls(*args, **kwargs)
+        return cls.from_service_account_info(credentials_info)
 
 
 class Client(_ClientFactoryMixin):
