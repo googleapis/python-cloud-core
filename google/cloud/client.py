@@ -52,6 +52,36 @@ class _ClientFactoryMixin(object):
     _SET_PROJECT = False
 
     @classmethod
+    def from_service_account_info(cls, info, *args, **kwargs):
+        """Factory to retrieve JSON credentials while creating client.
+
+        :type info: str
+        :param info:
+            The JSON object with a private key and other credentials
+            information (downloaded from the Google APIs console).
+
+        :type args: tuple
+        :param args: Remaining positional arguments to pass to constructor.
+
+        :param kwargs: Remaining keyword arguments to pass to constructor.
+
+        :rtype: :class:`_ClientFactoryMixin`
+        :returns: The client created with the retrieved JSON credentials.
+        :raises TypeError: if there is a conflict with the kwargs
+                 and the credentials created by the factory.
+        """
+        if "credentials" in kwargs:
+            raise TypeError("credentials must not be in keyword arguments")
+
+        credentials = service_account.Credentials.from_service_account_info(info)
+        if cls._SET_PROJECT:
+            if "project" not in kwargs:
+                kwargs["project"] = info.get("project_id")
+
+        kwargs["credentials"] = credentials
+        return cls(*args, **kwargs)
+
+    @classmethod
     def from_service_account_json(cls, json_credentials_path, *args, **kwargs):
         """Factory to retrieve JSON credentials while creating client.
 
