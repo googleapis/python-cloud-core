@@ -220,6 +220,7 @@ class TestClient(unittest.TestCase):
 
         http.close.assert_called_once_with()
 
+
 class Test_ClientProjectMixin(unittest.TestCase):
     @staticmethod
     def _get_target_class():
