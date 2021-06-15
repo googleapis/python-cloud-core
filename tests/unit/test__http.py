@@ -15,9 +15,9 @@
 import json
 import os
 import unittest
+from unittest import mock
 import warnings
 
-import mock
 import requests
 from six.moves import http_client
 
