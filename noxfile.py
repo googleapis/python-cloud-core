@@ -80,7 +80,7 @@ def default(session):
     )
 
 
-@nox.session(python=["2.7", "3.6", "3.7", "3.8", "3.9"])
+@nox.session(python=["3.6", "3.7", "3.8", "3.9"])
 def unit(session):
     """Default unit test session."""
     default(session)
