@@ -544,12 +544,12 @@ class Test__to_bytes(unittest.TestCase):
         self.assertEqual(self._call_fut(value), value)
 
     def test_with_unicode(self):
-        value = u"string-val"
+        value = "string-val"
         encoded_value = b"string-val"
         self.assertEqual(self._call_fut(value), encoded_value)
 
     def test_unicode_non_ascii(self):
-        value = u"\u2013"  # Long hyphen
+        value = "\u2013"  # Long hyphen
         encoded_value = b"\xe2\x80\x93"
         self.assertRaises(UnicodeEncodeError, self._call_fut, value)
         self.assertEqual(self._call_fut(value, encoding="utf-8"), encoded_value)
@@ -571,7 +571,7 @@ class Test__bytes_to_unicode(unittest.TestCase):
         self.assertEqual(self._call_fut(value), encoded_value)
 
     def test_with_unicode(self):
-        value = u"string-val"
+        value = "string-val"
         encoded_value = "string-val"
         self.assertEqual(self._call_fut(value), encoded_value)
 

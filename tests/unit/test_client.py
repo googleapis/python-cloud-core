@@ -410,8 +410,8 @@ class TestClientWithProject(unittest.TestCase):
         PROJECT = b"PROJECT"
         self._explicit_ctor_helper(PROJECT)
 
-    def test_constructor_explicit_unicode(self):
-        PROJECT = u"PROJECT"
+    def test_constructor_explicit_text(self):
+        PROJECT = "PROJECT"
         self._explicit_ctor_helper(PROJECT)
 
     def _from_service_account_info_helper(self, project=None):
