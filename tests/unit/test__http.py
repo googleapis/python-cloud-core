@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import http.client
 import json
 import os
 import unittest
@@ -19,7 +20,6 @@ from unittest import mock
 import warnings
 
 import requests
-from six.moves import http_client
 
 
 class TestConnection(unittest.TestCase):
@@ -128,7 +128,7 @@ class TestConnection(unittest.TestCase):
         self.assertIs(conn.http, client._http)
 
 
-def make_response(status=http_client.OK, content=b"", headers={}):
+def make_response(status=http.client.OK, content=b"", headers={}):
     response = requests.Response()
     response.status_code = status
     response._content = content
@@ -201,8 +201,8 @@ class TestJSONConnection(unittest.TestCase):
         self.assertEqual(uri, URI)
 
     def test_build_api_url_w_extra_query_params(self):
-        from six.moves.urllib.parse import parse_qs
-        from six.moves.urllib.parse import urlsplit
+        from urllib.parse import parse_qs
+        from urllib.parse import urlsplit
 
         client = object()
         conn = self._make_mock_one(client)
@@ -219,8 +219,8 @@ class TestJSONConnection(unittest.TestCase):
         self.assertEqual(parms["prettyPrint"], ["false"])
 
     def test_build_api_url_w_extra_query_params_tuples(self):
-        from six.moves.urllib.parse import parse_qs
-        from six.moves.urllib.parse import urlsplit
+        from urllib.parse import parse_qs
+        from urllib.parse import urlsplit
 
         client = object()
         conn = self._make_mock_one(client)
@@ -285,14 +285,14 @@ class TestJSONConnection(unittest.TestCase):
     def test__make_request_no_data_no_content_type_no_headers(self):
         from google.cloud._http import CLIENT_INFO_HEADER
 
-        http = make_requests_session([make_response()])
-        client = mock.Mock(_http=http, spec=["_http"])
+        session = make_requests_session([make_response()])
+        client = mock.Mock(_http=session, spec=["_http"])
         conn = self._make_one(client)
         url = "http://example.com/test"
 
         response = conn._make_request("GET", url)
 
-        self.assertEqual(response.status_code, http_client.OK)
+        self.assertEqual(response.status_code, http.client.OK)
         self.assertEqual(response.content, b"")
 
         expected_headers = {
@@ -300,7 +300,7 @@ class TestJSONConnection(unittest.TestCase):
             "User-Agent": conn.user_agent,
             CLIENT_INFO_HEADER: conn.user_agent,
         }
-        http.request.assert_called_once_with(
+        session.request.assert_called_once_with(
             method="GET",
             url=url,
             headers=expected_headers,
@@ -311,8 +311,8 @@ class TestJSONConnection(unittest.TestCase):
     def test__make_request_w_data_no_extra_headers(self):
         from google.cloud._http import CLIENT_INFO_HEADER
 
-        http = make_requests_session([make_response()])
-        client = mock.Mock(_http=http, spec=["_http"])
+        session = make_requests_session([make_response()])
+        client = mock.Mock(_http=session, spec=["_http"])
         conn = self._make_one(client)
         url = "http://example.com/test"
         data = b"data"
@@ -325,7 +325,7 @@ class TestJSONConnection(unittest.TestCase):
             "User-Agent": conn.user_agent,
             CLIENT_INFO_HEADER: conn.user_agent,
         }
-        http.request.assert_called_once_with(
+        session.request.assert_called_once_with(
             method="GET",
             url=url,
             headers=expected_headers,
@@ -336,8 +336,8 @@ class TestJSONConnection(unittest.TestCase):
     def test__make_request_w_extra_headers(self):
         from google.cloud._http import CLIENT_INFO_HEADER
 
-        http = make_requests_session([make_response()])
-        client = mock.Mock(_http=http, spec=["_http"])
+        session = make_requests_session([make_response()])
+        client = mock.Mock(_http=session, spec=["_http"])
         conn = self._make_one(client)
 
         url = "http://example.com/test"
@@ -349,7 +349,7 @@ class TestJSONConnection(unittest.TestCase):
             "User-Agent": conn.user_agent,
             CLIENT_INFO_HEADER: conn.user_agent,
         }
-        http.request.assert_called_once_with(
+        session.request.assert_called_once_with(
             method="GET",
             url=url,
             headers=expected_headers,
@@ -360,8 +360,8 @@ class TestJSONConnection(unittest.TestCase):
     def test__make_request_w_timeout(self):
         from google.cloud._http import CLIENT_INFO_HEADER
 
-        http = make_requests_session([make_response()])
-        client = mock.Mock(_http=http, spec=["_http"])
+        session = make_requests_session([make_response()])
+        client = mock.Mock(_http=session, spec=["_http"])
         conn = self._make_one(client)
 
         url = "http://example.com/test"
@@ -372,7 +372,7 @@ class TestJSONConnection(unittest.TestCase):
             "User-Agent": conn.user_agent,
             CLIENT_INFO_HEADER: conn.user_agent,
         }
-        http.request.assert_called_once_with(
+        session.request.assert_called_once_with(
             method="GET",
             url=url,
             headers=expected_headers,
@@ -383,10 +383,10 @@ class TestJSONConnection(unittest.TestCase):
     def test_api_request_defaults(self):
         from google.cloud._http import CLIENT_INFO_HEADER
 
-        http = make_requests_session(
+        session = make_requests_session(
             [make_response(content=b"{}", headers=self.JSON_HEADERS)]
         )
-        client = mock.Mock(_http=http, spec=["_http"])
+        client = mock.Mock(_http=session, spec=["_http"])
         conn = self._make_mock_one(client)
         path = "/path/required"
 
@@ -400,7 +400,7 @@ class TestJSONConnection(unittest.TestCase):
         expected_url = "{base}/mock/{version}{path}?prettyPrint=false".format(
             base=conn.API_BASE_URL, version=conn.API_VERSION, path=path
         )
-        http.request.assert_called_once_with(
+        session.request.assert_called_once_with(
             method="GET",
             url=expected_url,
             headers=expected_headers,
@@ -409,16 +409,16 @@ class TestJSONConnection(unittest.TestCase):
         )
 
     def test_api_request_w_non_json_response(self):
-        http = make_requests_session([make_response(content=b"content")])
-        client = mock.Mock(_http=http, spec=["_http"])
+        session = make_requests_session([make_response(content=b"content")])
+        client = mock.Mock(_http=session, spec=["_http"])
         conn = self._make_mock_one(client)
 
         with self.assertRaises(ValueError):
             conn.api_request("GET", "/")
 
     def test_api_request_wo_json_expected(self):
-        http = make_requests_session([make_response(content=b"content")])
-        client = mock.Mock(_http=http, spec=["_http"])
+        session = make_requests_session([make_response(content=b"content")])
+        client = mock.Mock(_http=session, spec=["_http"])
         conn = self._make_mock_one(client)
 
         result = conn.api_request("GET", "/", expect_json=False)
@@ -426,12 +426,12 @@ class TestJSONConnection(unittest.TestCase):
         self.assertEqual(result, b"content")
 
     def test_api_request_w_query_params(self):
-        from six.moves.urllib.parse import parse_qs
-        from six.moves.urllib.parse import urlsplit
+        from urllib.parse import parse_qs
+        from urllib.parse import urlsplit
         from google.cloud._http import CLIENT_INFO_HEADER
 
-        http = make_requests_session([self.EMPTY_JSON_RESPONSE])
-        client = mock.Mock(_http=http, spec=["_http"])
+        session = make_requests_session([self.EMPTY_JSON_RESPONSE])
+        client = mock.Mock(_http=session, spec=["_http"])
         conn = self._make_mock_one(client)
 
         result = conn.api_request("GET", "/", {"foo": "bar", "baz": ["qux", "quux"]})
@@ -443,7 +443,7 @@ class TestJSONConnection(unittest.TestCase):
             "User-Agent": conn.user_agent,
             CLIENT_INFO_HEADER: conn.user_agent,
         }
-        http.request.assert_called_once_with(
+        session.request.assert_called_once_with(
             method="GET",
             url=mock.ANY,
             headers=expected_headers,
@@ -451,7 +451,7 @@ class TestJSONConnection(unittest.TestCase):
             timeout=self._get_default_timeout(),
         )
 
-        url = http.request.call_args[1]["url"]
+        url = session.request.call_args[1]["url"]
         scheme, netloc, path, qs, _ = urlsplit(url)
         self.assertEqual("%s://%s" % (scheme, netloc), conn.API_BASE_URL)
         # Intended to emulate self.mock_template
@@ -464,8 +464,8 @@ class TestJSONConnection(unittest.TestCase):
     def test_api_request_w_headers(self):
         from google.cloud._http import CLIENT_INFO_HEADER
 
-        http = make_requests_session([self.EMPTY_JSON_RESPONSE])
-        client = mock.Mock(_http=http, spec=["_http"])
+        session = make_requests_session([self.EMPTY_JSON_RESPONSE])
+        client = mock.Mock(_http=session, spec=["_http"])
         conn = self._make_mock_one(client)
 
         result = conn.api_request("GET", "/", headers={"X-Foo": "bar"})
@@ -477,7 +477,7 @@ class TestJSONConnection(unittest.TestCase):
             "X-Foo": "bar",
             CLIENT_INFO_HEADER: conn.user_agent,
         }
-        http.request.assert_called_once_with(
+        session.request.assert_called_once_with(
             method="GET",
             url=mock.ANY,
             headers=expected_headers,
@@ -488,8 +488,8 @@ class TestJSONConnection(unittest.TestCase):
     def test_api_request_w_extra_headers(self):
         from google.cloud._http import CLIENT_INFO_HEADER
 
-        http = make_requests_session([self.EMPTY_JSON_RESPONSE])
-        client = mock.Mock(_http=http, spec=["_http"])
+        session = make_requests_session([self.EMPTY_JSON_RESPONSE])
+        client = mock.Mock(_http=session, spec=["_http"])
         conn = self._make_mock_one(client)
         conn.extra_headers = {
             "X-Baz": "dax-quux",
@@ -507,7 +507,7 @@ class TestJSONConnection(unittest.TestCase):
             "X-Baz": "dax-quux",
             CLIENT_INFO_HEADER: conn.user_agent,
         }
-        http.request.assert_called_once_with(
+        session.request.assert_called_once_with(
             method="GET",
             url=mock.ANY,
             headers=expected_headers,
@@ -518,8 +518,8 @@ class TestJSONConnection(unittest.TestCase):
     def test_api_request_w_data(self):
         from google.cloud._http import CLIENT_INFO_HEADER
 
-        http = make_requests_session([self.EMPTY_JSON_RESPONSE])
-        client = mock.Mock(_http=http, spec=["_http"])
+        session = make_requests_session([self.EMPTY_JSON_RESPONSE])
+        client = mock.Mock(_http=session, spec=["_http"])
         conn = self._make_mock_one(client)
 
         data = {"foo": "bar"}
@@ -534,7 +534,7 @@ class TestJSONConnection(unittest.TestCase):
             CLIENT_INFO_HEADER: conn.user_agent,
         }
 
-        http.request.assert_called_once_with(
+        session.request.assert_called_once_with(
             method="POST",
             url=mock.ANY,
             headers=expected_headers,
@@ -545,10 +545,10 @@ class TestJSONConnection(unittest.TestCase):
     def test_api_request_w_timeout(self):
         from google.cloud._http import CLIENT_INFO_HEADER
 
-        http = make_requests_session(
+        session = make_requests_session(
             [make_response(content=b"{}", headers=self.JSON_HEADERS)]
         )
-        client = mock.Mock(_http=http, spec=["_http"])
+        client = mock.Mock(_http=session, spec=["_http"])
         conn = self._make_mock_one(client)
         path = "/path/required"
 
@@ -562,7 +562,7 @@ class TestJSONConnection(unittest.TestCase):
         expected_url = "{base}/mock/{version}{path}?prettyPrint=false".format(
             base=conn.API_BASE_URL, version=conn.API_VERSION, path=path
         )
-        http.request.assert_called_once_with(
+        session.request.assert_called_once_with(
             method="GET",
             url=expected_url,
             headers=expected_headers,
@@ -573,8 +573,8 @@ class TestJSONConnection(unittest.TestCase):
     def test_api_request_w_404(self):
         from google.cloud import exceptions
 
-        http = make_requests_session([make_response(http_client.NOT_FOUND)])
-        client = mock.Mock(_http=http, spec=["_http"])
+        session = make_requests_session([make_response(http.client.NOT_FOUND)])
+        client = mock.Mock(_http=session, spec=["_http"])
         conn = self._make_mock_one(client)
 
         with self.assertRaises(exceptions.NotFound):
@@ -583,8 +583,10 @@ class TestJSONConnection(unittest.TestCase):
     def test_api_request_w_500(self):
         from google.cloud import exceptions
 
-        http = make_requests_session([make_response(http_client.INTERNAL_SERVER_ERROR)])
-        client = mock.Mock(_http=http, spec=["_http"])
+        session = make_requests_session(
+            [make_response(http.client.INTERNAL_SERVER_ERROR)]
+        )
+        client = mock.Mock(_http=session, spec=["_http"])
         conn = self._make_mock_one(client)
 
         with self.assertRaises(exceptions.InternalServerError):

@@ -119,8 +119,6 @@ class _GAXPageIterator(object):
 
     def next(self):
         """Iterate to the next page."""
-        import six
-
-        return six.next(self._pages)
+        return next(self._pages)
 
     __next__ = next

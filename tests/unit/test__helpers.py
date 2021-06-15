@@ -198,7 +198,6 @@ class Test__millis_from_datetime(unittest.TestCase):
 
     def test_w_utc_datetime(self):
         import datetime
-        import six
         from google.cloud._helpers import UTC
         from google.cloud._helpers import _microseconds_from_datetime
 
@@ -206,12 +205,11 @@ class Test__millis_from_datetime(unittest.TestCase):
         NOW_MICROS = _microseconds_from_datetime(NOW)
         MILLIS = NOW_MICROS // 1000
         result = self._call_fut(NOW)
-        self.assertIsInstance(result, six.integer_types)
+        self.assertIsInstance(result, int)
         self.assertEqual(result, MILLIS)
 
     def test_w_non_utc_datetime(self):
         import datetime
-        import six
         from google.cloud._helpers import _UTC
         from google.cloud._helpers import _microseconds_from_datetime
 
@@ -224,12 +222,11 @@ class Test__millis_from_datetime(unittest.TestCase):
         NOW_MICROS = _microseconds_from_datetime(NOW)
         MILLIS = NOW_MICROS // 1000
         result = self._call_fut(NOW)
-        self.assertIsInstance(result, six.integer_types)
+        self.assertIsInstance(result, int)
         self.assertEqual(result, MILLIS)
 
     def test_w_naive_datetime(self):
         import datetime
-        import six
         from google.cloud._helpers import UTC
         from google.cloud._helpers import _microseconds_from_datetime
 
@@ -238,7 +235,7 @@ class Test__millis_from_datetime(unittest.TestCase):
         UTC_NOW_MICROS = _microseconds_from_datetime(UTC_NOW)
         MILLIS = UTC_NOW_MICROS // 1000
         result = self._call_fut(NOW)
-        self.assertIsInstance(result, six.integer_types)
+        self.assertIsInstance(result, int)
         self.assertEqual(result, MILLIS)
 
 
@@ -794,7 +791,7 @@ class Test_make_secure_channel(unittest.TestCase):
         return make_secure_channel(*args, **kwargs)
 
     def test_it(self):
-        from six.moves import http_client
+        import http.client
 
         credentials = object()
         host = "HOST"
@@ -809,7 +806,7 @@ class Test_make_secure_channel(unittest.TestCase):
 
         self.assertIs(result, secure_authorized_channel.return_value)
 
-        expected_target = "%s:%d" % (host, http_client.HTTPS_PORT)
+        expected_target = "%s:%d" % (host, http.client.HTTPS_PORT)
         expected_options = (("grpc.primary_user_agent", user_agent),)
 
         secure_authorized_channel.assert_called_once_with(
@@ -817,7 +814,7 @@ class Test_make_secure_channel(unittest.TestCase):
         )
 
     def test_extra_options(self):
-        from six.moves import http_client
+        import http.client
 
         credentials = object()
         host = "HOST"
@@ -833,7 +830,7 @@ class Test_make_secure_channel(unittest.TestCase):
 
         self.assertIs(result, secure_authorized_channel.return_value)
 
-        expected_target = "%s:%d" % (host, http_client.HTTPS_PORT)
+        expected_target = "%s:%d" % (host, http.client.HTTPS_PORT)
         expected_options = (("grpc.primary_user_agent", user_agent), extra_options[0])
 
         secure_authorized_channel.assert_called_once_with(

@@ -392,8 +392,6 @@ class TestClientWithProject(unittest.TestCase):
             self._make_one(project=object(), credentials=CREDENTIALS, _http=HTTP)
 
     def _explicit_ctor_helper(self, project):
-        import six
-
         CREDENTIALS = _make_credentials()
         HTTP = object()
 
@@ -401,7 +399,7 @@ class TestClientWithProject(unittest.TestCase):
             project=project, credentials=CREDENTIALS, _http=HTTP
         )
 
-        if isinstance(project, six.binary_type):
+        if isinstance(project, bytes):
             self.assertEqual(client_obj.project, project.decode("utf-8"))
         else:
             self.assertEqual(client_obj.project, project)

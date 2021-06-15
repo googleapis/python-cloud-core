@@ -21,12 +21,10 @@ from __future__ import absolute_import
 
 import calendar
 import datetime
+import http.client
 import os
 import re
 from threading import local as Local
-
-import six
-from six.moves import http_client
 
 import google.auth
 import google.auth.transport.requests
@@ -344,9 +342,6 @@ def _datetime_to_rfc3339(value, ignore_zone=True):
 def _to_bytes(value, encoding="ascii"):
     """Converts a string value to bytes, if necessary.
 
-    Unfortunately, ``six.b`` is insufficient for this task since in
-    Python2 it does not modify ``unicode`` objects.
-
     :type value: str / bytes or unicode
     :param value: The string/bytes value to be converted.
 
@@ -363,8 +358,8 @@ def _to_bytes(value, encoding="ascii"):
               in if it started out as bytes.
     :raises TypeError: if the value could not be converted to bytes.
     """
-    result = value.encode(encoding) if isinstance(value, six.text_type) else value
-    if isinstance(result, six.binary_type):
+    result = value.encode(encoding) if isinstance(value, str) else value
+    if isinstance(result, bytes):
         return result
     else:
         raise TypeError("%r could not be converted to bytes" % (value,))
@@ -382,8 +377,8 @@ def _bytes_to_unicode(value):
 
     :raises ValueError: if the value could not be converted to unicode.
     """
-    result = value.decode("utf-8") if isinstance(value, six.binary_type) else value
-    if isinstance(result, six.text_type):
+    result = value.decode("utf-8") if isinstance(value, bytes) else value
+    if isinstance(result, str):
         return result
     else:
         raise ValueError("%r could not be converted to unicode" % (value,))
@@ -559,7 +554,7 @@ def make_secure_channel(credentials, user_agent, host, extra_options=()):
     :rtype: :class:`grpc._channel.Channel`
     :returns: gRPC secure channel with credentials attached.
     """
-    target = "%s:%d" % (host, http_client.HTTPS_PORT)
+    target = "%s:%d" % (host, http.client.HTTPS_PORT)
     http_request = google.auth.transport.requests.Request()
 
     user_agent_option = ("grpc.primary_user_agent", user_agent)
@@ -621,7 +616,7 @@ def make_insecure_stub(stub_class, host, port=None):
     if port is None:
         target = host
     else:
-        # NOTE: This assumes port != http_client.HTTPS_PORT:
+        # NOTE: This assumes port != http.client.HTTPS_PORT:
         target = "%s:%d" % (host, port)
     channel = grpc.insecure_channel(target)
     return stub_class(channel)
