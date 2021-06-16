@@ -60,9 +60,7 @@ def default(session):
     )
 
     # Install all test dependencies, then install local packages in-place.
-    session.install(
-        "mock", "pytest", "pytest-cov", "grpcio >= 1.0.2", "-c", constraints_path
-    )
+    session.install("pytest", "pytest-cov", "grpcio >= 1.0.2", "-c", constraints_path)
     session.install("-e", ".", "-c", constraints_path)
 
     # Run py.test against the unit tests.
