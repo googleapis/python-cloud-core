@@ -117,8 +117,6 @@ class _GAXPageIterator(object):
         self._pages = iter(pages)
         self.page_token = kwargs.get("page_token")
 
-    def next(self):
+    def __next__(self):
         """Iterate to the next page."""
         return next(self._pages)
-
-    __next__ = next
