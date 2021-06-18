@@ -14,6 +14,8 @@
 
 """This script is used to synthesize generated parts of this library."""
 
+import re
+
 import synthtool as s
 from synthtool import gcp
 
@@ -31,7 +33,6 @@ s.move(
         ".flake8",
         ".coveragerc",
         "setup.cfg",
-        "CONTRIBUTING.rst",
     ],
 )
 
