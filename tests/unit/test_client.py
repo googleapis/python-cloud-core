@@ -456,13 +456,13 @@ class TestClientWithProject(unittest.TestCase):
 
         klass = self._get_target_class()
 
-        info = {"dummy": "value", "valid": "json"}
+        default_project = "eye-d-of-project"
+        info = {"dummy": "value", "valid": "json", "project_id": default_project}
         if project is None:
             expected_project = "eye-d-of-project"
         else:
             expected_project = project
 
-        info["project_id"] = expected_project
         # Mock both the file opening and the credentials constructor.
         json_fi = io.StringIO(_helpers._bytes_to_unicode(json.dumps(info)))
         file_open_patch = mock.patch("io.open", return_value=json_fi)
