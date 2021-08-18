@@ -6,6 +6,10 @@
 
 ## [2.0.0](https://www.github.com/googleapis/python-cloud-core/compare/v2.0.0-b1...v2.0.0) (2021-08-18)
 
+### ⚠ BREAKING CHANGES
+
+* drop python 2.7 support ([#103](https://www.github.com/googleapis/python-cloud-core/issues/103)) ([181d706](https://www.github.com/googleapis/python-cloud-core/commit/181d706e5b44d9d4189c21782551ce85c720d733)), closes [#102](https://www.github.com/googleapis/python-cloud-core/issues/102)
+
 
 ### Miscellaneous Chores
 
