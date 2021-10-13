@@ -38,7 +38,7 @@ def lint(session):
     session.run("flake8", "google", "tests")
 
 
-@nox.session(python="3.6")
+@nox.session(python=DEFAULT_PYTHON_VERSION)
 def mypy(session):
     """Run type-checking."""
     session.install(".", "mypy")
