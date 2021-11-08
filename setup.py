@@ -39,7 +39,7 @@ extras = {"grpc": "grpcio >= 1.8.2, < 2.0dev"}
 package_root = os.path.abspath(os.path.dirname(__file__))
 
 version = {}
-with open(os.path.join(package_root, "google/cloud/version/__init__.py")) as fp:
+with open(os.path.join(package_root, "google/cloud/version.py")) as fp:
     exec(fp.read(), version)
 version = version["__version__"]
 
