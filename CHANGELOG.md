@@ -4,6 +4,13 @@
 
 [1]: https://pypi.org/project/google-cloud-core/#history
 
+### [2.1.1](https://www.github.com/googleapis/python-cloud-core/compare/v2.1.0...v2.1.1) (2021-11-09)
+
+
+### Bug Fixes
+
+* add mypy checking + 'py.typed' files ([#149](https://www.github.com/googleapis/python-cloud-core/issues/149)) ([f20ef60](https://www.github.com/googleapis/python-cloud-core/commit/f20ef60abaff13520d2e7b9719741746bd0d1c7b))
+
 ## [2.1.0](https://www.github.com/googleapis/python-cloud-core/compare/v2.0.0...v2.1.0) (2021-10-05)
 
 
