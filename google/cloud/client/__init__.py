@@ -18,6 +18,8 @@ import io
 import json
 import os
 from pickle import PicklingError
+from typing import Tuple
+from typing import Union
 
 import google.api_core.client_options
 import google.api_core.exceptions
@@ -53,7 +55,7 @@ class _ClientFactoryMixin(object):
     def from_service_account_info(cls, info, *args, **kwargs):
         """Factory to retrieve JSON credentials while creating client.
 
-        :type info: str
+        :type info: dict
         :param info:
             The JSON object with a private key and other credentials
             information (downloaded from the Google APIs console).
@@ -142,7 +144,7 @@ class Client(_ClientFactoryMixin):
             to acquire default credentials.
     """
 
-    SCOPE = None
+    SCOPE: Union[Tuple[str, ...], None] = None
     """The scopes required for authenticating with a service.
 
     Needs to be set by subclasses.
