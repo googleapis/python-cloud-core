@@ -9,6 +9,7 @@ on:
 jobs:
 
   run-lint-mypy:
+    name: lint-mypy
     runs-on: ubuntu-latest
 
     steps:
@@ -39,6 +40,7 @@ jobs:
         nox -s mypy
 
   run-unittests:
+    name: unit-${{ python }}
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -77,6 +79,7 @@ jobs:
         path: .coverage-${{ matrix.python }}
 
   report-coverage:
+    name: cover
     runs-on: ubuntu-latest
     needs:
         - run-unittests
