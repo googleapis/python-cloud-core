@@ -40,7 +40,7 @@ jobs:
         nox -s mypy
 
   run-unittests:
-    name: unit-${{ python }}
+    name: unit-${{ matrix.python }}
     runs-on: ubuntu-latest
     strategy:
       matrix:
