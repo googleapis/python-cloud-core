@@ -8,6 +8,5 @@
     "repo": "googleapis/python-cloud-core",
     "distribution_name": "google-cloud-core",
     "default_version": "",
-    "codeowner_team": "",
-    "api_shortname": "google-cloud-core"
+    "codeowner_team": ""
 }
