@@ -43,7 +43,10 @@ def mypy(session):
     """Run type-checking."""
     session.install(".", "mypy")
     session.install(
-        "types-setuptools", "types-requests", "types-mock", "types-protobuf",
+        "types-setuptools",
+        "types-requests",
+        "types-mock",
+        "types-protobuf",
     )
     session.run("mypy", "google", "tests")
 
@@ -143,7 +146,10 @@ def docfx(session):
 
     session.install("-e", ".")
     session.install(
-        "sphinx==4.0.1", "alabaster", "recommonmark", "gcp-sphinx-docfx-yaml",
+        "sphinx==4.0.1",
+        "alabaster",
+        "recommonmark",
+        "gcp-sphinx-docfx-yaml",
     )
 
     shutil.rmtree(os.path.join("docs", "_build"), ignore_errors=True)
