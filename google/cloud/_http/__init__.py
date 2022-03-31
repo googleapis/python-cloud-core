@@ -282,6 +282,7 @@ class JSONConnection(Connection):
         headers=None,
         target_object=None,
         timeout=_DEFAULT_TIMEOUT,
+        extra_api_info=None,
     ):
         """A low level method to send a request to the API.
 
@@ -327,7 +328,10 @@ class JSONConnection(Connection):
         if content_type:
             headers["Content-Type"] = content_type
 
-        headers[CLIENT_INFO_HEADER] = self.user_agent
+        if extra_api_info:
+            headers[CLIENT_INFO_HEADER] = f"{self.user_agent} {extra_api_info}"
+        else:
+            headers[CLIENT_INFO_HEADER] = self.user_agent
         headers["User-Agent"] = self.user_agent
 
         return self._do_request(
@@ -385,6 +389,7 @@ class JSONConnection(Connection):
         expect_json=True,
         _target_object=None,
         timeout=_DEFAULT_TIMEOUT,
+        extra_api_info=None,
     ):
         """Make a request over the HTTP transport to the API.
 
@@ -474,6 +479,7 @@ class JSONConnection(Connection):
             headers=headers,
             target_object=_target_object,
             timeout=timeout,
+            extra_api_info=extra_api_info,
         )
 
         if not 200 <= response.status_code < 300:
