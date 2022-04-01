@@ -574,7 +574,7 @@ class TestJSONConnection(unittest.TestCase):
             data=None,
             timeout=(2.2, 3.3),
         )
-    
+
     def test_api_request_w_extra_api_info(self):
         from google.cloud._http import CLIENT_INFO_HEADER
 
@@ -582,7 +582,7 @@ class TestJSONConnection(unittest.TestCase):
         client = mock.Mock(_http=session, spec=["_http"])
         conn = self._make_mock_one(client)
 
-        EXTRA_API_INFO="gccl-invocation-id/testing-id-123"
+        EXTRA_API_INFO = "gccl-invocation-id/testing-id-123"
         result = conn.api_request("GET", "/", extra_api_info=EXTRA_API_INFO)
 
         self.assertEqual(result, {})

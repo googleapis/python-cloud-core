@@ -318,6 +318,10 @@ class JSONConnection(Connection):
             Can also be passed as a tuple (connect_timeout, read_timeout).
             See :meth:`requests.Session.request` documentation for details.
 
+        :type extra_api_info: string
+        :param extra_api_info: (optional) Extra api info to be appended to
+            the X-Goog-API-Client header
+
         :rtype: :class:`requests.Response`
         :returns: The HTTP response.
         """
@@ -450,6 +454,10 @@ class JSONConnection(Connection):
 
             Can also be passed as a tuple (connect_timeout, read_timeout).
             See :meth:`requests.Session.request` documentation for details.
+
+        :type extra_api_info: string
+        :param extra_api_info: (optional) Extra api info to be appended to
+            the X-Goog-API-Client header
 
         :raises ~google.cloud.exceptions.GoogleCloudError: if the response code
             is not 200 OK.
