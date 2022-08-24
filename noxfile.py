@@ -97,7 +97,7 @@ def unit(session):
     default(session)
 
 
-@nox.session(python=DEFAULT_PYTHON_VERSION)
+@nox.session(python="3.10")
 def lint_setup_py(session):
     """Verify that setup.py is valid (including RST check)."""
 
