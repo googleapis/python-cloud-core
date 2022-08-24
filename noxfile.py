@@ -26,7 +26,7 @@ DEFAULT_PYTHON_VERSION = "3.7"
 CURRENT_DIRECTORY = os.path.abspath(os.path.dirname(__file__))
 
 
-@nox.session(python=DEFAULT_PYTHON_VERSION)
+@nox.session(python="3.10")
 def lint(session):
     """Run linters.
 
