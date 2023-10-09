@@ -22,7 +22,7 @@ import nox
 BLACK_VERSION = "black==23.7.0"
 BLACK_PATHS = ["docs", "google", "tests", "noxfile.py", "setup.py"]
 
-DEFAULT_PYTHON_VERSION = "3.7"
+DEFAULT_PYTHON_VERSION = "3.8"
 CURRENT_DIRECTORY = os.path.abspath(os.path.dirname(__file__))
 
 
