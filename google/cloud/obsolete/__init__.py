@@ -14,8 +14,9 @@
 
 """Helpers for deprecated code and modules."""
 
-import warnings
 import sys
+import warnings
+
 
 if sys.version_info < (3, 8):
     import importlib_metadata as metadata
