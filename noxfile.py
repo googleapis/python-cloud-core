@@ -48,7 +48,7 @@ def mypy(session):
         "types-mock",
         "types-protobuf",
     )
-    session.run("mypy", "google", "tests")
+    session.run("mypy", "-p", "google", "-p", "tests")
 
 
 @nox.session(python=DEFAULT_PYTHON_VERSION)
@@ -91,7 +91,7 @@ def default(session):
     )
 
 
-@nox.session(python=["3.7", "3.8", "3.9", "3.10", "3.11"])
+@nox.session(python=["3.7", "3.8", "3.9", "3.10", "3.11", "3.12"])
 def unit(session):
     """Default unit test session."""
     default(session)
