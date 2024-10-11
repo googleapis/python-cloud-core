@@ -18,14 +18,16 @@ import io
 import json
 import os
 from pickle import PicklingError
-from typing import Tuple
+from typing import Optional, Tuple
 from typing import Union
 
 import google.api_core.client_options
+from google.api_core.client_options import ClientOptions
 import google.api_core.exceptions
 import google.auth
 from google.auth import environment_vars
 import google.auth.credentials
+from google.auth.credentials import Credentials
 import google.auth.transport.requests
 from google.cloud._helpers import _determine_default_project
 from google.oauth2 import service_account
@@ -150,7 +152,12 @@ class Client(_ClientFactoryMixin):
     Needs to be set by subclasses.
     """
 
-    def __init__(self, credentials=None, _http=None, client_options=None):
+    def __init__(
+        self,
+        credentials: Optional[Credentials] = None,
+        _http=None,
+        client_options: Optional[ClientOptions] = None,
+    ):
         if isinstance(client_options, dict):
             client_options = google.api_core.client_options.from_dict(client_options)
         if client_options is None:
@@ -248,7 +255,9 @@ class _ClientProjectMixin(object):
              if the project value is invalid.
     """
 
-    def __init__(self, project=None, credentials=None):
+    def __init__(
+        self, project: Optional[str] = None, credentials: Optional[Credentials] = None
+    ):
         # This test duplicates the one from `google.auth.default`, but earlier,
         # for backward compatibility:  we want the environment variable to
         # override any project set on the credentials.  See:
@@ -316,7 +325,13 @@ class ClientWithProject(Client, _ClientProjectMixin):
 
     _SET_PROJECT = True  # Used by from_service_account_json()
 
-    def __init__(self, project=None, credentials=None, client_options=None, _http=None):
+    def __init__(
+        self,
+        project: Optional[str] = None,
+        credentials: Optional[Credentials] = None,
+        client_options: Optional[ClientOptions] = None,
+        _http=None,
+    ):
         _ClientProjectMixin.__init__(self, project=project, credentials=credentials)
         Client.__init__(
             self, credentials=credentials, client_options=client_options, _http=_http

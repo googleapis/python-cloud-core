@@ -136,7 +136,7 @@ def _ensure_tuple_or_list(arg_name, tuple_or_list):
     return list(tuple_or_list)
 
 
-def _determine_default_project(project=None):
+def _determine_default_project(project: Optional[str] = None):
     """Determine default project ID explicitly or implicitly as fall-back.
 
     See :func:`google.auth.default` for details on how the default project
