@@ -1,10 +1,9 @@
 [build-system]
-requires = ["setuptools", "setuptools-scm"]
+requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "google-cloud-core"
-version = "2.4.1"
 authors = [{ name = "Google LLC", email = "googleapis-packages@google.com" }]
 license = { text = "Apache 2.0" }
 requires-python = ">=3.7"
@@ -33,6 +32,10 @@ dependencies = [
   "google-auth >= 1.25.0, < 3.0dev",
   "importlib-metadata > 1.0.0; python_version<'3.8'",
 ]
+dynamic = ["version"]
 
 [project.optional-dependencies]
 grpc = ["grpcio >= 1.38.0, < 2.0dev", "grpcio-status >= 1.38.0, < 2.0.dev0"]
+
+[tool.setuptools.dynamic]
+version = { attr = "google.cloud.version.__version__" }
