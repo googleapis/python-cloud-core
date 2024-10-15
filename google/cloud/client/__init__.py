@@ -18,8 +18,9 @@ import io
 import json
 import os
 from pickle import PicklingError
-from typing import Optional, Tuple
-from typing import Union
+from typing import Optional, Tuple, Union
+
+import requests
 
 import google.api_core.client_options
 from google.api_core.client_options import ClientOptions
@@ -27,7 +28,7 @@ import google.api_core.exceptions
 import google.auth
 from google.auth import environment_vars
 import google.auth.credentials
-from google.auth.credentials import Credentials
+from google.auth.credentials import Credentials, CredentialsWithQuotaProject
 import google.auth.transport.requests
 from google.cloud._helpers import _determine_default_project
 from google.oauth2 import service_account
@@ -155,7 +156,7 @@ class Client(_ClientFactoryMixin):
     def __init__(
         self,
         credentials: Optional[Credentials] = None,
-        _http=None,
+        _http: Optional[requests.Session] = None,
         client_options: Optional[ClientOptions] = None,
     ):
         if isinstance(client_options, dict):
@@ -189,6 +190,7 @@ class Client(_ClientFactoryMixin):
         )
 
         if client_options.quota_project_id:
+            assert isinstance(self._credentials, CredentialsWithQuotaProject)
             self._credentials = self._credentials.with_quota_project(
                 client_options.quota_project_id
             )
