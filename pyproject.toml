@@ -35,6 +35,9 @@ dependencies = [
 ]
 dynamic = ["version"]
 
+[project.urls]
+Repository = "https://github.com/googleapis/python-cloud-core"
+
 [project.optional-dependencies]
 grpc = ["grpcio >= 1.38.0, < 2.0dev", "grpcio-status >= 1.38.0, < 2.0.dev0"]
 

@@ -30,7 +30,6 @@ packages = [
 ]
 
 setuptools.setup(
-    url="https://github.com/googleapis/python-cloud-core",
     platforms="Posix; MacOS X; Windows",
     packages=packages,
     include_package_data=True,
