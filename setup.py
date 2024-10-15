@@ -12,15 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import io
 import os
 
 import setuptools
 
-
-# Package metadata.
-
-description = "Google Cloud API client core library"
 
 # Setup boilerplate below this line.
 
@@ -35,7 +30,6 @@ packages = [
 ]
 
 setuptools.setup(
-    description=description,
     url="https://github.com/googleapis/python-cloud-core",
     platforms="Posix; MacOS X; Windows",
     packages=packages,
