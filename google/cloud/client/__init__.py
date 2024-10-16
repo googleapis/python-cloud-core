@@ -132,8 +132,6 @@ class Client:
 
         :rtype: :class:`Client`
         :returns: The client created with the retrieved JSON credentials.
-        :raises TypeError: if there is a conflict with the kwargs
-                 and the credentials created by the factory.
         """
         credentials = service_account.Credentials.from_service_account_info(info)
         return cls(credentials=credentials, _http=_http, client_options=client_options)
@@ -154,8 +152,6 @@ class Client:
 
         :rtype: :class:`Client`
         :returns: The client created with the retrieved JSON credentials.
-        :raises TypeError: if there is a conflict with the kwargs
-                 and the credentials created by the factory.
         """
         with io.open(json_credentials_path, "r", encoding="utf-8") as json_fi:
             credentials_info = json.load(json_fi)
