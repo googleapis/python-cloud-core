@@ -18,7 +18,7 @@ import io
 import json
 import os
 from pickle import PicklingError
-from typing import Optional, Tuple, Union
+from typing import Optional, Self, Tuple, Union
 
 import requests
 
@@ -55,7 +55,7 @@ class _ClientFactoryMixin(object):
     _SET_PROJECT = False
 
     @classmethod
-    def from_service_account_info(cls, info, *args, **kwargs):
+    def from_service_account_info(cls, info: dict, *args, **kwargs) -> Self:
         """Factory to retrieve JSON credentials while creating client.
 
         :type info: dict
@@ -85,7 +85,7 @@ class _ClientFactoryMixin(object):
         return cls(*args, **kwargs)
 
     @classmethod
-    def from_service_account_json(cls, json_credentials_path, *args, **kwargs):
+    def from_service_account_json(cls, json_credentials_path: str, *args, **kwargs):
         """Factory to retrieve JSON credentials while creating client.
 
         :type json_credentials_path: str
@@ -185,6 +185,8 @@ class Client(_ClientFactoryMixin):
             else:
                 credentials, _ = google.auth.default(scopes=scopes)
 
+        assert isinstance(credentials, google.auth.credentials.Credentials)
+        assert scopes is not None
         self._credentials = google.auth.credentials.with_scopes_if_required(
             credentials, scopes=scopes
         )
@@ -284,16 +286,10 @@ class _ClientProjectMixin(object):
                 "determined from the environment."
             )
 
-        if isinstance(project, bytes):
-            project = project.decode("utf-8")
-
-        if not isinstance(project, str):
-            raise ValueError("Project must be a string.")
-
         self.project = project
 
     @staticmethod
-    def _determine_default(project):
+    def _determine_default(project: Optional[str]) -> Optional[str]:
         """Helper:  use default project detection."""
         return _determine_default_project(project)
 
@@ -332,7 +328,7 @@ class ClientWithProject(Client, _ClientProjectMixin):
         project: Optional[str] = None,
         credentials: Optional[Credentials] = None,
         client_options: Optional[ClientOptions] = None,
-        _http=None,
+        _http: Optional[requests.Session] = None,
     ):
         _ClientProjectMixin.__init__(self, project=project, credentials=credentials)
         Client.__init__(
