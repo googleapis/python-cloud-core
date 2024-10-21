@@ -162,8 +162,8 @@ class Client(_ClientFactoryMixin):
         if isinstance(client_options, dict):
             client_options = google.api_core.client_options.from_dict(client_options)
         if client_options is None:
-            client_options = google.api_core.client_options.ClientOptions()
-        assert isinstance(client_options, google.api_core.client_options.ClientOptions)
+            client_options = ClientOptions()
+        assert isinstance(client_options, ClientOptions)
 
         if credentials and client_options.credentials_file:
             raise google.api_core.exceptions.DuplicateCredentialArgs(
