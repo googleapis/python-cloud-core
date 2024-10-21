@@ -49,7 +49,7 @@ class _ClientFactoryMixin(object):
     _SET_PROJECT = False
 
     @classmethod
-    def from_service_account_info(cls, info: dict, *args, **kwargs) -> Self:
+    def from_service_account_info(cls, info, *args, **kwargs) -> Self:
         """Factory to retrieve JSON credentials while creating client.
 
         :type info: dict
