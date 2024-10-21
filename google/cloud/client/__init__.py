@@ -34,12 +34,6 @@ from google.cloud._helpers import _determine_default_project
 from google.oauth2 import service_account
 
 
-_GOOGLE_AUTH_CREDENTIALS_HELP = (
-    "This library only supports credentials from google-auth-library-python. "
-    "See https://google-auth.readthedocs.io/en/latest/ "
-    "for help on authentication with this library."
-)
-
 # Default timeout for auth requests.
 _CREDENTIALS_REFRESH_TIMEOUT = 300
 
@@ -169,9 +163,6 @@ class Client(_ClientFactoryMixin):
             raise google.api_core.exceptions.DuplicateCredentialArgs(
                 "'credentials' and 'client_options.credentials_file' are mutually exclusive."
             )
-
-        if credentials is not None:
-            raise ValueError(_GOOGLE_AUTH_CREDENTIALS_HELP)
 
         scopes = client_options.scopes or self.SCOPE
 
