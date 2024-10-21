@@ -28,7 +28,6 @@ import google.api_core.exceptions
 import google.auth
 from google.auth import environment_vars
 import google.auth.credentials
-from google.auth.credentials import Credentials, CredentialsWithQuotaProject
 import google.auth.transport.requests
 from google.cloud._helpers import _determine_default_project
 from google.oauth2 import service_account
@@ -149,7 +148,7 @@ class Client(_ClientFactoryMixin):
 
     def __init__(
         self,
-        credentials: Optional[Credentials] = None,
+        credentials: Optional[google.auth.credentials.Credentials] = None,
         _http: Optional[requests.Session] = None,
         client_options: Union[ClientOptions, Dict[str, Any], None] = None,
     ):
@@ -182,7 +181,9 @@ class Client(_ClientFactoryMixin):
         )
 
         if client_options.quota_project_id:
-            assert isinstance(self._credentials, CredentialsWithQuotaProject)
+            assert isinstance(
+                self._credentials, google.auth.credentials.CredentialsWithQuotaProject
+            )
             self._credentials = self._credentials.with_quota_project(
                 client_options.quota_project_id
             )
@@ -250,7 +251,9 @@ class _ClientProjectMixin(object):
     """
 
     def __init__(
-        self, project: Optional[str] = None, credentials: Optional[Credentials] = None
+        self,
+        project: Optional[str] = None,
+        credentials: Optional[google.auth.credentials.Credentials] = None,
     ):
         # This test duplicates the one from `google.auth.default`, but earlier,
         # for backward compatibility:  we want the environment variable to
@@ -316,7 +319,7 @@ class ClientWithProject(Client, _ClientProjectMixin):
     def __init__(
         self,
         project: Optional[str] = None,
-        credentials: Optional[Credentials] = None,
+        credentials: Optional[google.auth.credentials.Credentials] = None,
         client_options: Optional[ClientOptions] = None,
         _http: Optional[requests.Session] = None,
     ):
