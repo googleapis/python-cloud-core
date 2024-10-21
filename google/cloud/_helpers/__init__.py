@@ -17,15 +17,13 @@
 This module is not part of the public API surface.
 """
 
-from __future__ import absolute_import
-
 import calendar
 import datetime
 import http.client
 import os
 import re
 from threading import local as Local
-from typing import Union
+from typing import Optional, Union
 
 import google.auth
 import google.auth.transport.requests

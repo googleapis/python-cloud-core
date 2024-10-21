@@ -18,7 +18,7 @@ import io
 import json
 import os
 from pickle import PicklingError
-from typing import Optional, Self, Tuple, Union
+from typing import Any, Dict, Optional, Self, Tuple, Union
 
 import requests
 
@@ -157,21 +157,20 @@ class Client(_ClientFactoryMixin):
         self,
         credentials: Optional[Credentials] = None,
         _http: Optional[requests.Session] = None,
-        client_options: Optional[ClientOptions] = None,
+        client_options: Union[ClientOptions, Dict[str, Any], None] = None,
     ):
         if isinstance(client_options, dict):
             client_options = google.api_core.client_options.from_dict(client_options)
         if client_options is None:
             client_options = google.api_core.client_options.ClientOptions()
+        assert isinstance(client_options, google.api_core.client_options.ClientOptions)
 
         if credentials and client_options.credentials_file:
             raise google.api_core.exceptions.DuplicateCredentialArgs(
                 "'credentials' and 'client_options.credentials_file' are mutually exclusive."
             )
 
-        if credentials and not isinstance(
-            credentials, google.auth.credentials.Credentials
-        ):
+        if credentials is not None:
             raise ValueError(_GOOGLE_AUTH_CREDENTIALS_HELP)
 
         scopes = client_options.scopes or self.SCOPE
