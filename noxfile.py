@@ -29,7 +29,7 @@ CURRENT_DIRECTORY = os.path.abspath(os.path.dirname(__file__))
 nox.options.error_on_missing_interpreters = True
 
 
-@nox.session(python="3.8")
+@nox.session(python="3.10")
 def lint(session):
     """Run linters.
 
