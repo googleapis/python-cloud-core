@@ -18,10 +18,12 @@ import io
 import json
 import os
 from pickle import PicklingError
-from typing import Tuple
-from typing import Union
+from typing import Any, Dict, Optional, Self, Tuple, Union
+
+import requests
 
 import google.api_core.client_options
+from google.api_core.client_options import ClientOptions
 import google.api_core.exceptions
 import google.auth
 from google.auth import environment_vars
@@ -30,12 +32,6 @@ import google.auth.transport.requests
 from google.cloud._helpers import _determine_default_project
 from google.oauth2 import service_account
 
-
-_GOOGLE_AUTH_CREDENTIALS_HELP = (
-    "This library only supports credentials from google-auth-library-python. "
-    "See https://google-auth.readthedocs.io/en/latest/ "
-    "for help on authentication with this library."
-)
 
 # Default timeout for auth requests.
 _CREDENTIALS_REFRESH_TIMEOUT = 300
@@ -52,7 +48,7 @@ class _ClientFactoryMixin(object):
     _SET_PROJECT = False
 
     @classmethod
-    def from_service_account_info(cls, info, *args, **kwargs):
+    def from_service_account_info(cls, info, *args, **kwargs) -> Self:
         """Factory to retrieve JSON credentials while creating client.
 
         :type info: dict
@@ -82,7 +78,7 @@ class _ClientFactoryMixin(object):
         return cls(*args, **kwargs)
 
     @classmethod
-    def from_service_account_json(cls, json_credentials_path, *args, **kwargs):
+    def from_service_account_json(cls, json_credentials_path: str, *args, **kwargs):
         """Factory to retrieve JSON credentials while creating client.
 
         :type json_credentials_path: str
@@ -150,21 +146,22 @@ class Client(_ClientFactoryMixin):
     Needs to be set by subclasses.
     """
 
-    def __init__(self, credentials=None, _http=None, client_options=None):
+    def __init__(
+        self,
+        credentials: Optional[google.auth.credentials.Credentials] = None,
+        _http: Optional[requests.Session] = None,
+        client_options: Union[ClientOptions, Dict[str, Any], None] = None,
+    ):
         if isinstance(client_options, dict):
             client_options = google.api_core.client_options.from_dict(client_options)
         if client_options is None:
-            client_options = google.api_core.client_options.ClientOptions()
+            client_options = ClientOptions()
+        assert isinstance(client_options, ClientOptions)
 
         if credentials and client_options.credentials_file:
             raise google.api_core.exceptions.DuplicateCredentialArgs(
                 "'credentials' and 'client_options.credentials_file' are mutually exclusive."
             )
-
-        if credentials and not isinstance(
-            credentials, google.auth.credentials.Credentials
-        ):
-            raise ValueError(_GOOGLE_AUTH_CREDENTIALS_HELP)
 
         scopes = client_options.scopes or self.SCOPE
 
@@ -177,11 +174,16 @@ class Client(_ClientFactoryMixin):
             else:
                 credentials, _ = google.auth.default(scopes=scopes)
 
+        assert isinstance(credentials, google.auth.credentials.Credentials)
+        assert scopes is not None
         self._credentials = google.auth.credentials.with_scopes_if_required(
             credentials, scopes=scopes
         )
 
         if client_options.quota_project_id:
+            assert isinstance(
+                self._credentials, google.auth.credentials.CredentialsWithQuotaProject
+            )
             self._credentials = self._credentials.with_quota_project(
                 client_options.quota_project_id
             )
@@ -248,7 +250,11 @@ class _ClientProjectMixin(object):
              if the project value is invalid.
     """
 
-    def __init__(self, project=None, credentials=None):
+    def __init__(
+        self,
+        project: Optional[str] = None,
+        credentials: Optional[google.auth.credentials.Credentials] = None,
+    ):
         # This test duplicates the one from `google.auth.default`, but earlier,
         # for backward compatibility:  we want the environment variable to
         # override any project set on the credentials.  See:
@@ -273,16 +279,10 @@ class _ClientProjectMixin(object):
                 "determined from the environment."
             )
 
-        if isinstance(project, bytes):
-            project = project.decode("utf-8")
-
-        if not isinstance(project, str):
-            raise ValueError("Project must be a string.")
-
         self.project = project
 
     @staticmethod
-    def _determine_default(project):
+    def _determine_default(project: Optional[str]) -> Optional[str]:
         """Helper:  use default project detection."""
         return _determine_default_project(project)
 
@@ -316,7 +316,13 @@ class ClientWithProject(Client, _ClientProjectMixin):
 
     _SET_PROJECT = True  # Used by from_service_account_json()
 
-    def __init__(self, project=None, credentials=None, client_options=None, _http=None):
+    def __init__(
+        self,
+        project: Optional[str] = None,
+        credentials: Optional[google.auth.credentials.Credentials] = None,
+        client_options: Optional[ClientOptions] = None,
+        _http: Optional[requests.Session] = None,
+    ):
         _ClientProjectMixin.__init__(self, project=project, credentials=credentials)
         Client.__init__(
             self, credentials=credentials, client_options=client_options, _http=_http
