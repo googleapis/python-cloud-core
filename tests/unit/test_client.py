@@ -75,11 +75,29 @@ class TestClient(unittest.TestCase):
         self.assertIs(client_obj._credentials, credentials)
         self.assertIs(client_obj._http_internal, http)
 
+    def test_ctor_client_options_w_api_key(self):
+        from google.auth.api_key import Credentials
+        API_KEY = "my_api_key"
+
+        client_options = {"api_key": API_KEY}
+        client_obj = self._make_one(client_options=client_options)
+
+        self.assertIsInstance(client_obj._credentials, Credentials)
+
     def test_ctor_client_options_w_conflicting_creds(self):
         from google.api_core.exceptions import DuplicateCredentialArgs
 
         credentials = _make_credentials()
         client_options = {"credentials_file": "/path/to/creds.json"}
+        with self.assertRaises(DuplicateCredentialArgs):
+            self._make_one(credentials=credentials, client_options=client_options)
+
+    def test_ctor_client_options_w_api_key_and_conflicting_creds(self):
+        from google.api_core.exceptions import DuplicateCredentialArgs
+        API_KEY = "my_api_key"
+
+        credentials = _make_credentials()
+        client_options = {"api_key": API_KEY}
         with self.assertRaises(DuplicateCredentialArgs):
             self._make_one(credentials=credentials, client_options=client_options)
 
