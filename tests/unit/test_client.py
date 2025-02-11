@@ -77,6 +77,7 @@ class TestClient(unittest.TestCase):
 
     def test_ctor_client_options_w_api_key(self):
         from google.auth.api_key import Credentials
+
         API_KEY = "my_api_key"
 
         client_options = {"api_key": API_KEY}
@@ -94,6 +95,7 @@ class TestClient(unittest.TestCase):
 
     def test_ctor_client_options_w_api_key_and_conflicting_creds(self):
         from google.api_core.exceptions import DuplicateCredentialArgs
+
         API_KEY = "my_api_key"
 
         credentials = _make_credentials()
