@@ -29,7 +29,7 @@ description = "Google Cloud API client core library"
 release_status = "Development Status :: 5 - Production/Stable"
 dependencies = [
     "google-api-core >= 1.31.6, <3.0.0dev,!=2.0.*,!=2.1.*,!=2.2.*,!=2.3.0",
-    "google-auth >= 1.25.0, < 3.0dev",
+    "google-auth >= 2.4.0, < 3.0dev",
     "importlib-metadata > 1.0.0; python_version<'3.8'",
 ]
 extras = {
