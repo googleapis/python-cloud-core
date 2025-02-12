@@ -25,6 +25,7 @@ import google.api_core.client_options
 import google.api_core.exceptions
 import google.auth
 from google.auth import environment_vars
+import google.auth.api_key
 import google.auth.credentials
 import google.auth.transport.requests
 from google.cloud._helpers import _determine_default_project
@@ -161,6 +162,11 @@ class Client(_ClientFactoryMixin):
                 "'credentials' and 'client_options.credentials_file' are mutually exclusive."
             )
 
+        if client_options.api_key and (credentials or client_options.credentials_file):
+            raise google.api_core.exceptions.DuplicateCredentialArgs(
+                "'client_options.api_key' is mutually exclusive with 'credentials' and 'client_options.credentials_file'."
+            )
+
         if credentials and not isinstance(
             credentials, google.auth.credentials.Credentials
         ):
@@ -174,6 +180,8 @@ class Client(_ClientFactoryMixin):
                 credentials, _ = google.auth.load_credentials_from_file(
                     client_options.credentials_file, scopes=scopes
                 )
+            elif client_options.api_key is not None:
+                credentials = google.auth.api_key.Credentials(client_options.api_key)
             else:
                 credentials, _ = google.auth.default(scopes=scopes)
 
