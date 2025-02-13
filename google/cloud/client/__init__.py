@@ -34,7 +34,7 @@ try:
     import google.auth.api_key
 
     HAS_GOOGLE_AUTH_API_KEY = True
-except:
+except ImportError:
     HAS_GOOGLE_AUTH_API_KEY = False
 
 
