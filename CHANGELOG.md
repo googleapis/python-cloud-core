@@ -4,7 +4,7 @@
 
 [1]: https://pypi.org/project/google-cloud-core/#history
 
-## [2.4.2](https://github.com/googleapis/python-cloud-core/compare/v2.4.1...v2.4.2) (2025-02-13)
+## [2.4.2rc0](https://github.com/googleapis/python-cloud-core/compare/v2.4.1....2.4.2rc0) (2025-02-13)
 
 
 ### Features
