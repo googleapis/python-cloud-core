@@ -48,75 +48,7 @@ _GOOGLE_AUTH_CREDENTIALS_HELP = (
 _CREDENTIALS_REFRESH_TIMEOUT = 300
 
 
-class _ClientFactoryMixin(object):
-    """Mixin to allow factories that create credentials.
-
-    .. note::
-
-        This class is virtual.
-    """
-
-    _SET_PROJECT = False
-
-    @classmethod
-    def from_service_account_info(cls, info, *args, **kwargs):
-        """Factory to retrieve JSON credentials while creating client.
-
-        :type info: dict
-        :param info:
-            The JSON object with a private key and other credentials
-            information (downloaded from the Google APIs console).
-
-        :type args: tuple
-        :param args: Remaining positional arguments to pass to constructor.
-
-        :param kwargs: Remaining keyword arguments to pass to constructor.
-
-        :rtype: :class:`_ClientFactoryMixin`
-        :returns: The client created with the retrieved JSON credentials.
-        :raises TypeError: if there is a conflict with the kwargs
-                 and the credentials created by the factory.
-        """
-        if "credentials" in kwargs:
-            raise TypeError("credentials must not be in keyword arguments")
-
-        credentials = service_account.Credentials.from_service_account_info(info)
-        if cls._SET_PROJECT:
-            if "project" not in kwargs:
-                kwargs["project"] = info.get("project_id")
-
-        kwargs["credentials"] = credentials
-        return cls(*args, **kwargs)
-
-    @classmethod
-    def from_service_account_json(cls, json_credentials_path, *args, **kwargs):
-        """Factory to retrieve JSON credentials while creating client.
-
-        :type json_credentials_path: str
-        :param json_credentials_path: The path to a private key file (this file
-                                      was given to you when you created the
-                                      service account). This file must contain
-                                      a JSON object with a private key and
-                                      other credentials information (downloaded
-                                      from the Google APIs console).
-
-        :type args: tuple
-        :param args: Remaining positional arguments to pass to constructor.
-
-        :param kwargs: Remaining keyword arguments to pass to constructor.
-
-        :rtype: :class:`_ClientFactoryMixin`
-        :returns: The client created with the retrieved JSON credentials.
-        :raises TypeError: if there is a conflict with the kwargs
-                 and the credentials created by the factory.
-        """
-        with io.open(json_credentials_path, "r", encoding="utf-8") as json_fi:
-            credentials_info = json.load(json_fi)
-
-        return cls.from_service_account_info(credentials_info, *args, **kwargs)
-
-
-class Client(_ClientFactoryMixin):
+class Client:
     """Client to bundle configuration needed for API requests.
 
     Stores ``credentials`` and an HTTP object so that subclasses
@@ -206,6 +138,45 @@ class Client(_ClientFactoryMixin):
 
         self._http_internal = _http
         self._client_cert_source = client_options.client_cert_source
+
+    @classmethod
+    def from_service_account_info(cls, info, _http=None, client_options=None):
+        """Factory to retrieve JSON credentials while creating client.
+
+        :type info: dict
+        :param info:
+            The JSON object with a private key and other credentials
+            information (downloaded from the Google APIs console).
+
+        :rtype: :class:`Client`
+        :returns: The client created with the retrieved JSON credentials.
+        """
+        credentials = service_account.Credentials.from_service_account_info(info)
+        return cls(credentials=credentials, _http=_http, client_options=client_options)
+
+    @classmethod
+    def from_service_account_json(
+        cls, json_credentials_path, _http=None, client_options=None
+    ):
+        """Factory to retrieve JSON credentials while creating client.
+
+        :type json_credentials_path: str
+        :param json_credentials_path: The path to a private key file (this file
+                                      was given to you when you created the
+                                      service account). This file must contain
+                                      a JSON object with a private key and
+                                      other credentials information (downloaded
+                                      from the Google APIs console).
+
+        :rtype: :class:`Client`
+        :returns: The client created with the retrieved JSON credentials.
+        """
+        with io.open(json_credentials_path, "r", encoding="utf-8") as json_fi:
+            credentials_info = json.load(json_fi)
+
+        return cls.from_service_account_info(
+            credentials_info, _http=_http, client_options=client_options
+        )
 
     def __getstate__(self):
         """Explicitly state that clients are not pickleable."""
