@@ -4,6 +4,13 @@
 
 [1]: https://pypi.org/project/google-cloud-core/#history
 
+## [2.4.4](https://github.com/googleapis/python-cloud-core/compare/v2.4.3...v2.4.4) (2025-03-10)
+
+
+### Bug Fixes
+
+* Resolve issue where pre-release versions of dependencies are installed ([#329](https://github.com/googleapis/python-cloud-core/issues/329)) ([ab9785d](https://github.com/googleapis/python-cloud-core/commit/ab9785d1bce1d50a03ff41d9b377dc7632772105))
+
 ## [2.4.3](https://github.com/googleapis/python-cloud-core/compare/v2.4.2...v2.4.3) (2025-03-10)
 
 
