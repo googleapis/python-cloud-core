@@ -14,9 +14,8 @@
 
 """Helpers for deprecated code and modules."""
 
-import sys
-import warnings
 import importlib.metadata as metadata
+import warnings
 
 
 def complain(distribution_name):

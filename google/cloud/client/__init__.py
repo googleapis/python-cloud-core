@@ -34,8 +34,8 @@ try:
     import google.auth.api_key
 
     HAS_GOOGLE_AUTH_API_KEY = True
-except ImportError:  # pragma: no cover
-    HAS_GOOGLE_AUTH_API_KEY = False  # pragma: no cover
+except ImportError:  # pragma: NO COVER
+    HAS_GOOGLE_AUTH_API_KEY = False  # pragma: NO COVER
     # TODO: Investigate adding a test for google.auth.api_key ImportError (https://github.com/googleapis/python-cloud-core/issues/334)
 
 
