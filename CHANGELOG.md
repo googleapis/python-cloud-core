@@ -4,6 +4,32 @@
 
 [1]: https://pypi.org/project/google-cloud-core/#history
 
+## [2.5.0](https://github.com/googleapis/google-cloud-python/compare/google-cloud-core-v2.4.3...google-cloud-core-v2.5.0) (2025-10-29)
+
+
+### Features
+
+* Add Python 3.14 support (#333) * feat(ci): Add Python 3.14 support to owlbot.py
+* 🦉 Updates from OwlBot post-processor
+See https://github.com/googleapis/repo-automation-bots/blob/main/packages/owl-bot/README.md
+* feat(ci): Add Python 3.14 support to core files
+* Apply suggestion from @chalmerlowe
+3.7 is not supported in this repo.
+* Apply suggestion from @chalmerlowe
+* Apply suggestion from @chalmerlowe
+3.7 is not supported in this repo.
+* fix(ci): Remove unit (3.7) from required checks
+* fix(coverage): Remove obsolete Python < 3.8 import logic
+* fix(coverage): Add no cover pragma for api_key import
+* fix(ci): Correct lint errors and coverage pragma case
+--------- ([c26e587a79b1905f4d64e409b853d9e50bbb6c17](https://github.com/googleapis/google-cloud-python/commit/c26e587a79b1905f4d64e409b853d9e50bbb6c17))
+
+
+### Bug Fixes
+
+* remove setup.cfg configuration for creating universal wheels (#332)  ([78ce8a6f7c781cf2585131d7961beec9069a206c](https://github.com/googleapis/google-cloud-python/commit/78ce8a6f7c781cf2585131d7961beec9069a206c))
+* resolve issue where pre-release versions of dependencies are installed (#329)  ([ab9785d1bce1d50a03ff41d9b377dc7632772105](https://github.com/googleapis/google-cloud-python/commit/ab9785d1bce1d50a03ff41d9b377dc7632772105))
+
 ## [2.4.3](https://github.com/googleapis/python-cloud-core/compare/v2.4.2...v2.4.3) (2025-03-10)
 
 
