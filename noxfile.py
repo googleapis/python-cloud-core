@@ -22,14 +22,14 @@ import nox
 BLACK_VERSION = "black==23.7.0"
 BLACK_PATHS = ["docs", "google", "tests", "noxfile.py", "setup.py"]
 
-DEFAULT_PYTHON_VERSION = "3.8"
+DEFAULT_PYTHON_VERSION = "3.14"
 CURRENT_DIRECTORY = os.path.abspath(os.path.dirname(__file__))
 
 # Error if a python version is missing
 nox.options.error_on_missing_interpreters = True
 
 
-@nox.session(python="3.10")
+@nox.session(python=DEFAULT_PYTHON_VERSION)
 def lint(session):
     """Run linters.
 
@@ -102,7 +102,7 @@ def unit(session):
     default(session)
 
 
-@nox.session(python="3.10")
+@nox.session(python=DEFAULT_PYTHON_VERSION)
 def lint_setup_py(session):
     """Verify that setup.py is valid (including RST check)."""
 
