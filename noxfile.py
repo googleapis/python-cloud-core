@@ -122,6 +122,8 @@ def cover(session):
     session.run("coverage", "erase")
 
 
+# Keep docs session at Python 3.10 until
+# https://github.com/googleapis/sphinx-docfx-yaml/issues/345 is fixed
 @nox.session(python="3.10")
 def docs(session):
     """Build the docs for this library."""
@@ -158,6 +160,8 @@ def docs(session):
     )
 
 
+# Keep docfx session at Python 3.10 until
+# https://github.com/googleapis/sphinx-docfx-yaml/issues/345 is fixed
 @nox.session(python="3.10")
 def docfx(session):
     """Build the docfx yaml files for this library."""
